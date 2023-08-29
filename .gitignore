@@ -11,6 +11,9 @@ env
 # Unittest reports
 .coverage*
 
+# Tests
+.pytest_cache/
+
 # Logs
 *.log
 
