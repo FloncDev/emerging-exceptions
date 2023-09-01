@@ -9,133 +9,130 @@ import PIL
 from PIL import Image
 
 
-def pixelise(ImgPath: str) -> dict:
+def pixelise(img_path: str) -> dict:
     """
     Convert the image to dictionary of pixel.
 
     Parameters
     ----------
-    ImgPath : str
+    img_path : str
         Input Image Path.
     Returns
     -------
-    PixelDict : Dict
+    pixel_dict : Dict
         Returns Dictionary where each Line represents a row of pixels,
         the colour codes of these pixels are recorded in the dict.
     """
-    PixelDict = {}
-    with Image.open(ImgPath) as im:
+    pixel_dict = {}
+    with Image.open(img_path) as im:
         px = im.load()
-        ImgSize = im.size
-        for LineNum in range(ImgSize[1]):
-            LineList = [0] * ImgSize[0]
-            for ColNum in range(ImgSize[0]):
-                NewPixel = px[ColNum, LineNum]
-                LineList[ColNum] = NewPixel
-            PixelDict[f"{LineNum}"] = LineList
-    return PixelDict
+        img_size = im.size
+        for line_num in range(img_size[1]):
+            line_list = [0] * img_size[0]
+            for col_num in range(img_size[0]):
+                new_pixel = px[col_num, line_num]
+                line_list[col_num] = new_pixel
+            pixel_dict[f"{line_num}"] = line_list
+    return pixel_dict
 
 
-def DictContract(PixelDict):  # noqa: D103
-    NewList = []
-    for i in PixelDict:
-        NewList = NewList + i
-    return NewList
+def dict_contract(pixel_dict):  # noqa: D103
+    new_list = []
+    for i in pixel_dict:
+        new_list = new_list + i
+    return new_list
 
 
-def AlphaImg(ImgPath: str, OutPath: str):
+def alpha_img(img_path: str, out_path: str):
     """Convert normal RGB image to RGBA so it contain alpha channel for modifying purpose."""
-    with Image.open(ImgPath) as im:
-        NewImg = PIL.Image.new("RGBA", im.size, None)
-        OldImg = im.crop((0, 0) + (im.size))
-        NewImg.paste(OldImg, (0, 0))
-    NewImg.save(OutPath)
+    with Image.open(img_path) as im:
+        new_img = PIL.Image.new("RGBA", im.size, None)
+        old_img = im.crop((0, 0) + (im.size))
+        new_img.paste(old_img, (0, 0))
+    new_img.save(out_path)
     return
 
 
-def StrToList(SecretMsg: str):
+def str_to_list(secret_msg: str):
     """Converting string of secret message to binary format."""
-    OutList = ["0"] * len(SecretMsg)
-    for i, a in enumerate(SecretMsg):
+    out_list = ["0"] * len(secret_msg)
+    for i, a in enumerate(secret_msg):
         mid = str(bin(ord(a)))
         final = mid.replace("0b", "")
         if len(final) != 8:
             final = "0" * (8 - len(final)) + final
-        OutList[i] = final
-    return OutList
+        out_list[i] = final
+    return out_list
 
 
-def HideMsg(ImgPath: str, SecretMsg: str, OutPath: str):
+def hide_msg(img_path: str, secret_msg: str, out_path: str):
     """
-    Hide secret message to an image which can be decode with HideMsg
+    Hide secret message to an image which can be decode with hide_msg
 
     Parameters
     ----------
-    ImgPath : str
+    img_path : str
         Input Image Path.
-    SecretMsg: str
+    secret_msg: str
         The secret message.
-    OutPath: str
+    out_path: str
         Output Inamge Path.
     """
-    BinMsg = StrToList(SecretMsg)
-    PixHorNum = 0
-    PixVerNum = 0
-    AlphaImg(ImgPath, OutPath)
-    PixelNum = 0
-    with Image.open(OutPath) as im:
+    bin_msg = str_to_list(secret_msg)
+    pix_hor_num = 0
+    pix_ver_num = 0
+    alpha_img(img_path, out_path)
+    with Image.open(out_path) as im:
         px = im.load()
-        ImgSize = (im.size[0] * im.size[1])
-        IterationNumber = ImgSize // 8
-        if IterationNumber < len(BinMsg):
+        img_size = (im.size[0] * im.size[1])
+        iteration_number = img_size // 8
+        if iteration_number < len(bin_msg):
             return "Image too small to encode message"
-        for i in range(len(BinMsg)):
-            for j in range(len(BinMsg[i])):
-                if PixHorNum > im.size[0] - 1:
-                    PixHorNum = 0
-                    PixVerNum = PixVerNum + 1
-                SelPixel = px[PixHorNum, PixVerNum]
-                if int(BinMsg[i][j]) == 1:
-                    RValue = SelPixel[0]
-                    GValue = SelPixel[1]
-                    BValue = SelPixel[2]
-                    px[PixHorNum, PixVerNum] = (RValue, GValue, BValue, 254)
-                PixHorNum = PixHorNum + 1
-                PixelNum = PixelNum + 1
-
-        im.save(OutPath)
+        for i in range(len(bin_msg)):
+            for j in range(len(bin_msg[i])):
+                if pix_hor_num > im.size[0] - 1:
+                    pix_hor_num = 0
+                    pix_ver_num = pix_ver_num + 1
+                sel_pixel = px[pix_hor_num, pix_ver_num]
+                if int(bin_msg[i][j]) == 1:
+                    r_value = sel_pixel[0]
+                    g_value = sel_pixel[1]
+                    b_value = sel_pixel[2]
+                    px[pix_hor_num, pix_ver_num] = (r_value, g_value, b_value, 254)
+                pix_hor_num = pix_hor_num + 1
+        im.save(out_path)
     return "done"
 
 
-def DecryptImg(ImgPath: str) -> str:
+def decrypt_img(img_path: str) -> str:
     """
     Retrieve the Secret Message from the encoded image
 
     Parameters
     ----------
-    ImgPath : str
+    img_path : str
         Input Image Path.
     Returns
     -------
-    SecretMsg : str
-        Return string hidden in the image from HideMsg
+    secret_msg : str
+        Return string hidden in the image from hide_msg
     """
-    PixelDict = pixelise(ImgPath)
-    DecodedBin = []
-    for i in range(len(PixelDict)):
-        for j in PixelDict[str(i)]:
+    pixel_dict = pixelise(img_path)
+    decoded_bin = []
+    for i in range(len(pixel_dict)):
+        for j in pixel_dict[str(i)]:
             if j[3] == 254:
-                DecodedBin.append(1)
+                decoded_bin.append(1)
             elif j[3] == 255:
-                DecodedBin.append(0)
+                decoded_bin.append(0)
     j = 0
-    Bytelist = []
-    while "".join(map(str, DecodedBin[j:j + 8])) != "00000000" and "".join(map(str, DecodedBin[j:j + 8])) != "":
-        Bytelist.append(DecodedBin[j:j + 8])
+    byte_list = []
+    while "".join(map(str, decoded_bin[j:j + 8])) != "00000000" and "".join(map(str, decoded_bin[j:j + 8])) != "":
+        byte_list.append(decoded_bin[j:j + 8])
         j = j + 8
-    NewStrList = ['0'] * len(Bytelist)
-    for i in range(len(Bytelist)):
-        SelectedByte = "".join(map(str, Bytelist[i]))
-        NewStrList[i] = chr(int(SelectedByte, 2))
+    new_str_list = ['0'] * len(byte_list)
+    for i in range(len(byte_list)):
+        selected_byte = "".join(map(str, byte_list[i]))
+        new_str_list[i] = chr(int(selected_byte, 2))
 
-    return "".join(NewStrList)
+    return "".join(new_str_list)
