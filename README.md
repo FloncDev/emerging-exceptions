@@ -12,7 +12,11 @@ poetry install
 and then to use the virtual environment (optional but recommended):
 ```shell
 poetry shell
+```
+And then to exit, simply `exit`.
 
-# And to exit
-exit
+To run the web server, from the root directory run:
+```shell
+uvicorn src.backend.main:app --port 8080
+
 ```
