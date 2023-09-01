@@ -91,21 +91,15 @@ def HideMsg(ImgPath: str, SecretMsg: str, OutPath: str):
             return "Image too small to encode message"
         for i in range(len(BinMsg)):
             for j in range(len(BinMsg[i])):
-                # print(f"{PixHorNum =}")
-                # print(f"{PixVerNum =}")
-                # print(f"{PixelNum =}")
                 if PixHorNum > im.size[0] - 1:
                     PixHorNum = 0
                     PixVerNum = PixVerNum + 1
                 SelPixel = px[PixHorNum, PixVerNum]
-                # print(f"{i =}")
-                # print(f"{j =}")
                 if int(BinMsg[i][j]) == 1:
                     RValue = SelPixel[0]
                     GValue = SelPixel[1]
                     BValue = SelPixel[2]
                     px[PixHorNum, PixVerNum] = (RValue, GValue, BValue, 254)
-                # print(px[PixHorNum,PixVerNum])
                 PixHorNum = PixHorNum + 1
                 PixelNum = PixelNum + 1
 
@@ -135,12 +129,10 @@ def DecryptImg(ImgPath: str) -> str:
             elif j[3] == 255:
                 DecodedBin.append(0)
     j = 0
-    # print(DecodedBin)
     Bytelist = []
     while "".join(map(str, DecodedBin[j:j + 8])) != "00000000" and "".join(map(str, DecodedBin[j:j + 8])) != "":
         Bytelist.append(DecodedBin[j:j + 8])
         j = j + 8
-        # print("".join(map(str,DecodedBin[j:j+8])))
     NewStrList = ['0'] * len(Bytelist)
     for i in range(len(Bytelist)):
         SelectedByte = "".join(map(str, Bytelist[i]))
