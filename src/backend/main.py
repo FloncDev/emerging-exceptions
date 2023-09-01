@@ -22,7 +22,8 @@ rendered_md = requests.request("POST", url, json={"text": text}, headers=headers
 rendered_md = rendered_md \
     .replace(">\n<", "><") \
     .replace("/div>\n", "/div>") \
-    .replace("\n", "<br>")
+    .replace("\n", "<br>") \
+    .replace("\"", "")
 
 
 @app.get("/rendered_readme")
