@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emerging Exceptions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="github-markdown.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <header>
+        <img src="media/Pydis codejam.svg" alt="Pydig" height="80">
+        <h1 class="team_name">Emerging Exceptions</h1>
+   </header>
+
+   <div class="main">
+        <div class="left">
+            <!-- For some reason height 100% isn't actually 100% -->
+            <iframe src="https://www.youtube-nocookie.com/embed/hgI0p1zf31k?si=V_EnsD6wHQzxcmku" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+            <div class="buttons">
+                <div class="btn start" href="#">Launch Web App</div>
+                <div class="btn github" href="https://github.com/Floncdev/emerging-exceptions">
+                    <img width="65px" src="media/White Github Logo.svg" alt="GitHub Logo">
+                </div>
+            </div>
+        </div>
+        <div class="readme markdown-body" id="readme">
+        </div>
+   </div>
+</body>
+    <script>
+        let readmeurl = window.location.origin + "/rendered_readme"
+
+        fetch(readmeurl)
+            .then(resp => resp.text())
+            .then(text => {
+                document.getElementById("readme").innerHTML = text.slice(1, text.length-1);
+        });
+
+        let btns = document.getElementsByClassName("btn");
+
+        console.log(btns, btns.length)
+
+        for (let i = 0; i < btns.length; i++) {
+            console.log(i)
+            btns[i].addEventListener("click", () => {
+                console.log("clicked")
+                window.location = btns[i].getAttribute("href");
+            })
+        }
+    </script>
+</html>
