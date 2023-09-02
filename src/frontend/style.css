@@ -1,8 +1,8 @@
 * {
     font-family: 'Fira Code';
     --background: #171717;
-    --primary: #6C9E8F;
-    --accent: #00000000; /* TODO */
+    --primary: #6C9E89;
+    --accent: #B87676;
 }
 
 html {
@@ -19,7 +19,7 @@ body {
 }
 
 .team_name {
-    color: var(--primary);
+    color: var(--accent);
     width: 475px;
     text-align: center;
     margin: 0;
@@ -65,11 +65,11 @@ iframe {
 }
 
 .btn {
-    height: 100px;
+    height: 70px;
     background-color: var(--primary);
     border-radius: 100px;
     text-align: center;
-    line-height: 100px;
+    line-height: 70px;
 }
 
 .btn:hover {
@@ -77,13 +77,13 @@ iframe {
 }
 
 .start {
-    width: 450px;
-    font-size: 40px;
+    width: 350px;
+    font-size: 35px;
     font-weight: 700;
 }
 
 .github {
-    width: 100px;
+    width: 70px;
     margin-left: 25px;
     position: relative;
 }
