@@ -1,1 +1,1 @@
-"""Module for all the pixel art image things"""
+"""Module for all PixelQR related things."""

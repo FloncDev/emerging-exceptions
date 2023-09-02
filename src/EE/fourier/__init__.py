@@ -1,1 +1,1 @@
-"""Module for all fourier related things"""
+"""Module for all fourier related things."""
