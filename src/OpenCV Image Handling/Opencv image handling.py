@@ -10,6 +10,7 @@ from PIL import Image
 from PIL import ImageEnhance
 import numpy
 import time
+import random
   
 # define a video capture object
 vid = cv2.VideoCapture(0)
@@ -41,7 +42,8 @@ def take_photo():
         if cv2.waitKey(1) & 0xFF == ord('c'):
             final = cv2.cvtColor(newframe, cv2.COLOR_BGR2RGB)
             final = Image.fromarray(final)
-            final.save("SavedCode.png")
+            new_image = final.crop((194,114,446,366))
+            new_image.save("SavedCode.png")
             time.sleep(2)
             break
       
@@ -49,14 +51,13 @@ def take_photo():
     cv2.destroyAllWindows()
     return
 
-def downscale(img_path:str):
+def downscale(img_path:str,out_path:str):
     with Image.open(img_path) as im:
-        # new_image = im.crop((194,114,446,366))
         new_image=im
-        smol = new_image.resize((64,64), PIL.Image.NEAREST)
+        smol = new_image.resize((32,32), PIL.Image.NEAREST)
         over_saturate = PIL.ImageEnhance.Color(smol)
-        smol = over_saturate.enhance(5)
-        smol.save("downscaled5.png")
+        smol = over_saturate.enhance(1)
+        smol.save(out_path)
 
 def pixelise(img_path: str) -> dict:
     """
@@ -174,44 +175,56 @@ def colour_list_to_str(colour_list: str):
     chr_list = []
     chr_decode = []
     for i in colour_list:
-        if i == w_colour:
+        if i == w_colour or i == w_colour+(255,):
             #NOTE: in this case hex refers to base 6 rather than base 16
             chr_hex_num = "".join(chr_decode)
             chr_dec_num = int(chr_hex_num,6)
             chr_list.append(chr(chr_dec_num))
             chr_decode = []
             continue
-        elif i == (0,0,0):
+        elif i == (0,0,0) or i == (0,0,0,255):
             break
-        elif i == r_colour:
+        elif i == r_colour or i == r_colour+(255,):
             chr_decode.append("0")
-        elif i == g_colour:
+        elif i == g_colour or i == g_colour+(255,):
             chr_decode.append("1")
-        elif i == b_colour:
+        elif i == b_colour or i == b_colour+(255,):
             chr_decode.append("2")
-        elif i == m_colour:
+        elif i == m_colour or i == m_colour+(255,):
             chr_decode.append("3")
-        elif i == c_colour:
+        elif i == c_colour or i == c_colour+(255,):
             chr_decode.append("4")
-        elif i == y_colour:
+        elif i == y_colour or i == y_colour+(255,):
             chr_decode.append("5")
     output_msg = "".join(chr_list)
     return output_msg
 
 def colour_list_to_image(colour_list: list,image_size: tuple, out_path: str):
+    col_list = [(255,0,0),(0,255,0),(0,0,255),(255,255,0),(255,0,255),(0,255,255),(255,255,255)]
     if len(colour_list) > (image_size[0] * image_size[1]):
         return "Colour list is too big for given size of image"
-    new_image = PIL.Image.new("RGB", image_size)
+    new_image = PIL.Image.new("RGBA", image_size)
     for pixel_num , col in enumerate(colour_list):
         row_num = 0
         while pixel_num >= image_size[0]:
             row_num = row_num + 1
             pixel_num = pixel_num - image_size[0]
         px = new_image.load()
-        print(pixel_num)
-        print(row_num)
         px[pixel_num, row_num] = col
-    new_image.save(out_path)
+    
+    background = PIL.Image.new("RGBA", image_size)
+    
+    for pixel_num in range(image_size[0] * image_size[1]):
+        row_num = 0
+        while pixel_num >= image_size[0]:
+            row_num = row_num + 1
+            pixel_num = pixel_num - image_size[0]
+        px = background.load()
+        px[pixel_num, row_num] = random.choice(col_list)
+        pixel_num = pixel_num + 1
+    
+    background.alpha_composite(new_image, (0,0))
+    background.save(out_path)
     
 def dict_to_list(pixel_dict:dict):
     pixel_list = []
@@ -219,6 +232,10 @@ def dict_to_list(pixel_dict:dict):
         pixel_list = pixel_list + pixel_dict[i]
     return pixel_list
 
+def str_to_image(secret_str:str, img_size:tuple, out_path:str):
+    collist = str_to_colour_list(secret_str)
+    colour_list_to_image(collist, img_size, out_path)
+    return "done"
 
         
         
