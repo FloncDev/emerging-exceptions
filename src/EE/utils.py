@@ -29,6 +29,8 @@ def str_to_bit(input_string: typing.AnyStr) -> list[int]:
 def bit_to_str(input_bit: list[int | str]) -> typing.AnyStr:
     """Convert list of 0 and 1 in either integer or string format to the original string."""
     bit_str_list = [str(a) for a in input_bit]
-    int_list = [int(''.join(bit_str_list[g:g + 8]), 2) for g in range(0, len(bit_str_list), 8)]
+    int_list = []
+    for g in range(0, len(bit_str_list), 8):
+        int_list.append(int(''.join(bit_str_list[g:g + 8]), 2))
     bin_str = bytes.fromhex(" ".join([hex(i).replace("0x", "") for i in int_list]))
     return bin_str.decode('utf-8')
