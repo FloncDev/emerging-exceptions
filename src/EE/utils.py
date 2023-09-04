@@ -1,9 +1,11 @@
+import math
 import typing
 from abc import ABC, abstractmethod
 
 MODE_ENCRYPTION = 0xFFFF0800
 MODE_DECRYPTION = 0xFFFF0801
 mode: typing.TypeAlias = MODE_ENCRYPTION | MODE_DECRYPTION
+b10_int: typing.TypeAlias = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 
 
 class LibraryBase(ABC):
@@ -34,3 +36,47 @@ def bit_to_str(input_bit: list[int | str]) -> typing.AnyStr:
         int_list.append(int(''.join(bit_str_list[g:g + 8]), 2))
     bin_str = bytes.fromhex(" ".join([hex(i).replace("0x", "") for i in int_list]))
     return bin_str.decode('utf-8')
+
+
+# def baseconvert(num: int, base: int):
+#     final_list = []
+#     place_num = 0
+#     for i in range(num):
+#         try:
+#             final_list[place_num]
+#         except:
+#             final_list.append(0)
+#         place_num = 0
+#         final_list[place_num] += 1
+#         while final_list[place_num] == base:
+#             final_list[place_num] = 0
+#             place_num = place_num + 1
+#             try:
+#                 final_list[place_num]
+#             except:
+#                 final_list.append(0)
+#             final_list[place_num] += 1
+#     final_list.reverse()
+#     final_int = int("".join(map(str, final_list)))
+#     return final_int
+
+
+def base_convert(num: int, base: b10_int) -> str:
+    """Convert base-10 number to value in between base- 1-10."""
+    if base == 10:
+        return str(num)
+    if base == 1:
+        return ('1' * num).zfill(1)
+    max_length = math.floor(math.log(num) / math.log(base))
+    current_num = num
+    return_str = ''
+    for notation in range(max_length, -1, -1):
+        notation_value = base ** notation
+        if current_num >= notation_value:
+            return_str += str(current_num // notation_value)
+            current_num -= (current_num // notation_value) * notation_value
+        else:
+            return_str += '0'
+    if current_num != 0:
+        raise ValueError(f'Num issue: {current_num}')
+    return return_str
