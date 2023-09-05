@@ -10,6 +10,9 @@ import PIL
 from PIL import Image
 import random
 import lorem
+import cv2
+import time
+import numpy
 
 def str_to_colour_list2(SecretMsg: str):
     r_colour = (255,0,0)
@@ -198,3 +201,156 @@ def pixelise(img_path: str) -> dict:
                 line_list[col_num] = new_pixel
             pixel_dict[f"{line_num}"] = line_list
     return pixel_dict
+
+def pixelise_img(img) -> dict:
+    """
+    Convert the image to dictionary of pixel.
+
+    Parameters
+    ----------
+    img_path
+        Input Image .
+    Returns
+    -------
+    pixel_dict : Dict
+        Returns Dictionary where each Line represents a row of pixels,
+        the colour codes of these pixels are recorded in the dict.
+    """
+    pixel_dict = {}
+
+    px = img.load()
+    img_size = img.size
+    for line_num in range(img_size[1]):
+        line_list = [0] * img_size[0]
+        for col_num in range(img_size[0]):
+            new_pixel = px[col_num, line_num]
+            line_list[col_num] = new_pixel
+        pixel_dict[f"{line_num}"] = line_list
+    return pixel_dict
+
+def tob10(i):
+    outVal = 0
+    for ii in map(int, i):
+        outVal = 3 * outVal + ii
+    return outVal
+
+def imgtostr2(img):
+    ta = list(img.getdata())
+    decoded = ""
+    counter = 0
+    pixels = 0
+    for i in ta:
+        if i[0] == 255 or i[0] == 254:
+            decoded = decoded + "0"
+        elif i[1] == 255 or i[1] == 254:
+            decoded = decoded + "1"
+        elif i[2] == 255 or i[2] == 254:
+            decoded = decoded + "2"
+        else:
+            counter += 1
+            continue
+        if pixels == 4:
+            pixels = 0
+            decoded += ","
+            continue
+        pixels += 1
+    decString = ""
+    for i in decoded.split(sep=","):
+        thisChar = chr(tob10(i))
+        if thisChar == "\x03":
+            break
+        decString += thisChar
+    with open("t.txt", "w", encoding="utf-8") as file:
+        file.write(decString)
+        file.close()
+    return decString
+        
+def rebuild(pixel_dict: dict):
+    new_image=PIL.Image.new("RGBA", (32,32))
+    px=new_image.load()
+    for i in pixel_dict:
+        for j in range(len(pixel_dict[i])):
+            pixel=pixel_dict[i][j]
+            px[j,int(i)]=pixel
+    new_image.show()
+    
+def str_to_img(secret_msg:str, out_path:str, image_size:tuple = (32,32)):
+    col_list = str_to_colour_list2(secret_msg)
+    colour_list_to_image(col_list, image_size, out_path)
+    return
+
+def take_photo():
+    vid = cv2.VideoCapture(0)
+    while(True):
+          
+        # Capture the video frame
+        # by frame
+        ret, frame = vid.read()
+        with Image.fromarray(frame) as im:
+            NewImg = PIL.Image.new("RGBA", im.size, None)
+            OldImg = im.crop((0,0)+(im.size))
+            NewImg.paste(OldImg, (0,0))
+            
+            centre_x = im.size[0]//2
+            centre_y = im.size[1]//2
+            
+            
+            with Image.open("Overlay.png") as overlay:
+                NewImg.alpha_composite(overlay,(centre_x-130,centre_y-130))
+            newframe = numpy.array(NewImg)
+        # Display the resulting frame
+        cv2.imshow('frame', newframe)
+          
+        # the 'c' button is set as the
+        # quitting button you may use any
+        # desired button of your choice
+        if cv2.waitKey(1) & 0xFF == ord('c'):
+            final = cv2.cvtColor(newframe, cv2.COLOR_BGR2RGB)
+            final = Image.fromarray(final)
+            new_image = final.crop((194,114,446,366))
+            img = new_image
+            px = img.load()
+            img_new = img.convert('RGBA')
+            px2 = img_new.load()
+            for x in range(img.size[0]):
+                for y in range(img.size[1]):
+                    if sum(px[x, y]) <= (255*0.3*3):
+                        px2[x, y] = (0,0,0,0)
+            img_new.save('test_result2.png')
+            
+            new_image.save("SavedCode.png")
+            time.sleep(2)
+            break
+    
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            time.sleep(2)
+            break
+      
+    vid.release()
+    cv2.destroyAllWindows()
+    return new_image
+
+def colour_correct(image):
+    smol = image.resize((32,32), PIL.Image.NEAREST)
+    px = smol.load()
+    for y in range(32):
+        for x in range(32):
+            if px[x,y][0] > px[x,y][1] and px[x,y][0] > px[x,y][2]:
+                px[x,y] = (255,0,0)
+            elif px[x,y][1] > px[x,y][0] and px[x,y][1] > px[x,y][2]:
+                px[x,y] = (0,255,0)    
+            elif px[x,y][2] > px[x,y][0] and px[x,y][2] > px[x,y][1]:
+                px[x,y] = (0,0,255)
+    return smol
+
+def img_to_str_the_second():
+    print("please wait for the camera to boot")
+    img_photo = take_photo()
+    print("1")
+    img_photo.show()
+    print("2")
+    corrected = colour_correct(img_photo)
+    print("3")
+    corrected.show()
+    output_string = imgtostr2(corrected)
+    return "output_string"
