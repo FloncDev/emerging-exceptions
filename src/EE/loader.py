@@ -54,14 +54,17 @@ def get_library_class(paths: path) -> dict[str, typing.Callable]:
     library_list = get_library(paths)
     return_dict = {}
     for library in library_list:
-        manifest_path = pathlib.Path(library_list[library], 'manifest.json')
-        with open(manifest_path, 'r') as f:
-            data = json.load(f)
-            spec = importlib.util.spec_from_file_location(library,
-                                                          pathlib.Path(library_list[library], data['location'][0]))
-            library_instance = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(library_instance)
-            return_dict[library] = getattr(library_instance, data['location'][1])
+        try:
+            manifest_path = pathlib.Path(library_list[library], 'manifest.json')
+            with open(manifest_path, 'r') as f:
+                data = json.load(f)
+                spec = importlib.util.spec_from_file_location(library,
+                                                              pathlib.Path(library_list[library], data['location'][0]))
+                library_instance = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(library_instance)
+                return_dict[library] = getattr(library_instance, data['location'][1])
+        except AttributeError:  # noqa: E722
+            pass
     return return_dict
 
 
