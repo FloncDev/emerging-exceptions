@@ -142,14 +142,13 @@ class Encryption(object):
                 msg = self.aes.decrypt(self.data.encode('utf-8'))
             return unpad(msg, BLOCK_SIZE)
 
-
-if __name__ == '__main__':
-    enc_box = Encryption('test1', MODE_ENCRYPTION)
-    dec_box = Encryption('test1', MODE_DECRYPTION)
-    enc_box.setData('1234')
-    enc_data = enc_box.getResult()
-    print(enc_data)
-    bit_enc_data = str_to_bit(enc_data)
-    dec_box.setData(bit_to_byte(bit_enc_data))
-    dec_data = dec_box.getResult().decode('utf-8')
-    print(dec_data)
+# if __name__ == '__main__':
+#     enc_box = Encryption('test1', MODE_ENCRYPTION)
+#     dec_box = Encryption('test1', MODE_DECRYPTION)
+#     enc_box.setData('1234')
+#     enc_data = enc_box.getResult()
+#     print(enc_data)
+#     bit_enc_data = str_to_bit(enc_data)
+#     dec_box.setData(bit_to_byte(bit_enc_data))
+#     dec_data = dec_box.getResult().decode('utf-8')
+#     print(dec_data)
