@@ -5,9 +5,12 @@ import typing
 from abc import ABC, abstractmethod
 
 import PIL.Image
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 
 MODE_ENCRYPTION = 0xFFFF0800
 MODE_DECRYPTION = 0xFFFF0801
+BLOCK_SIZE = 32
 mode: typing.TypeAlias = MODE_ENCRYPTION | MODE_DECRYPTION
 b10_int: typing.TypeAlias = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 path: typing.TypeAlias = pathlib.Path | str | os.PathLike
@@ -31,7 +34,10 @@ class LibraryBase(ABC):
 
 def str_to_bit(input_string: typing.AnyStr) -> list[int]:
     """Convert any string to list of 0 and 1 in integer format."""
-    str_integer_list = list(input_string.encode('utf-8'))
+    if not isinstance(input_string, bytes):
+        str_integer_list = list(input_string.encode('utf-8'))
+    else:
+        str_integer_list = list(input_string)
     binary_list = [bin(a).replace('0b', '').zfill(8) for a in str_integer_list]
     str_bit_list = list(''.join(binary_list))
     return [int(b) for b in str_bit_list]
@@ -39,35 +45,21 @@ def str_to_bit(input_string: typing.AnyStr) -> list[int]:
 
 def bit_to_str(input_bit: list[int | str]) -> typing.AnyStr:
     """Convert list of 0 and 1 in either integer or string format to the original string."""
+    data = bit_to_byte(input_bit)
+    try:
+        return data.decode('utf-8')
+    except AttributeError:
+        return data
+
+
+def bit_to_byte(input_bit: list[int | str]) -> typing.AnyStr:
+    """Convert list of 0 and 1 in either integer or string format to the original bytes."""
     bit_str_list = [str(a) for a in input_bit]
     int_list = []
     for g in range(0, len(bit_str_list), 8):
         int_list.append(int(''.join(bit_str_list[g:g + 8]), 2))
-    bin_str = bytes.fromhex(" ".join([hex(i).replace("0x", "") for i in int_list]))
-    return bin_str.decode('utf-8')
-
-
-# def baseconvert(num: int, base: int):
-#     final_list = []
-#     place_num = 0
-#     for i in range(num):
-#         try:
-#             final_list[place_num]
-#         except:
-#             final_list.append(0)
-#         place_num = 0
-#         final_list[place_num] += 1
-#         while final_list[place_num] == base:
-#             final_list[place_num] = 0
-#             place_num = place_num + 1
-#             try:
-#                 final_list[place_num]
-#             except:
-#                 final_list.append(0)
-#             final_list[place_num] += 1
-#     final_list.reverse()
-#     final_int = int("".join(map(str, final_list)))
-#     return final_int
+    bin_str = bytes(int_list)
+    return bin_str
 
 
 def base_convert(num: int, base: b10_int) -> str:
@@ -102,3 +94,62 @@ def load_image(paths: path) -> PIL.Image.Image:
     """Convert path to PIL.Image.Image instance."""
     images = PIL.Image.open(paths)
     return images
+
+
+class Encryption(object):
+    """Class for using AES-256 Encryption in a easier way."""
+
+    def __init__(self, key: typing.AnyStr = None, enc_type: mode = None):
+        self.aes = None
+        self.key = key.zfill(32)[:32]
+        self.enc_type = enc_type
+        self.data: str | bytes = ''
+
+    def setKey(self, key: typing.AnyStr):  # noqa: D102
+        self.key = key.zfill(32)[:32]
+
+    def setMode(self, enc_type: mode):  # noqa: D102
+        if self.enc_type is not None:
+            if self.enc_type != enc_type:
+                raise ValueError('You are trying to assign a different mode to the one you have set before')
+            else:
+                pass
+        self.enc_type = enc_type
+
+    def setData(self, stream_content: str):
+        """Set data to be encrypt or decrypt."""
+        self.data = stream_content
+
+    def getResult(self):
+        """Get result of the encryption or decryption"""
+        if self.data == '':
+            raise ValueError('You are trying to encrypt/decrypt nothing')
+        if self.enc_type is None:
+            raise ValueError('Mode have not being set')  # Require further improvement for the error message
+        if self.key is None:
+            raise ValueError('Key have the been provide for the operation')
+        self.aes = AES.new(key=self.key.encode('utf-8'), mode=AES.MODE_ECB)
+        if self.enc_type == MODE_ENCRYPTION:
+            if isinstance(self.data, bytes):
+                msg = self.aes.encrypt(pad(self.data, BLOCK_SIZE))
+            else:
+                msg = self.aes.encrypt(pad(self.data.encode('utf-8'), BLOCK_SIZE))
+            return msg
+        if self.enc_type == MODE_DECRYPTION:
+            if isinstance(self.data, bytes):
+                msg = self.aes.decrypt(self.data)
+            else:
+                msg = self.aes.decrypt(self.data.encode('utf-8'))
+            return unpad(msg, BLOCK_SIZE)
+
+
+if __name__ == '__main__':
+    enc_box = Encryption('test1', MODE_ENCRYPTION)
+    dec_box = Encryption('test1', MODE_DECRYPTION)
+    enc_box.setData('1234')
+    enc_data = enc_box.getResult()
+    print(enc_data)
+    bit_enc_data = str_to_bit(enc_data)
+    dec_box.setData(bit_to_byte(bit_enc_data))
+    dec_data = dec_box.getResult().decode('utf-8')
+    print(dec_data)
