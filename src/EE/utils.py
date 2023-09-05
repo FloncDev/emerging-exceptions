@@ -1,11 +1,20 @@
 import math
+import os
+import pathlib
 import typing
 from abc import ABC, abstractmethod
+
+import PIL.Image
 
 MODE_ENCRYPTION = 0xFFFF0800
 MODE_DECRYPTION = 0xFFFF0801
 mode: typing.TypeAlias = MODE_ENCRYPTION | MODE_DECRYPTION
 b10_int: typing.TypeAlias = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+path: typing.TypeAlias = pathlib.Path | str | os.PathLike
+pure_image: typing.TypeAlias = PIL.Image.Image
+image: typing.TypeAlias = path | pure_image
+message: typing.TypeAlias = typing.AnyStr | typing.Any
+secret: typing.TypeAlias = typing.AnyStr
 
 
 class LibraryBase(ABC):
@@ -80,3 +89,16 @@ def base_convert(num: int, base: b10_int) -> str:
     if current_num != 0:
         raise ValueError(f'Num issue: {current_num}')
     return return_str
+
+
+def load_path(paths: path) -> pathlib.Path:
+    """Load any PathLike object as pathlib.Path"""
+    if isinstance(paths, str) or isinstance(paths, os.PathLike):
+        return pathlib.Path(paths)
+    return paths
+
+
+def load_image(paths: path) -> PIL.Image.Image:
+    """Convert path to PIL.Image.Image instance."""
+    images = PIL.Image.open(paths)
+    return images
