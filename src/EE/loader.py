@@ -8,7 +8,8 @@ import typing
 import PIL.Image
 
 path: typing.TypeAlias = pathlib.Path | str | os.PathLike
-image: typing.TypeAlias = path | PIL.Image.Image
+pure_image: typing.TypeAlias = PIL.Image.Image
+image: typing.TypeAlias = path | pure_image
 message: typing.TypeAlias = typing.AnyStr | typing.Any
 secret: typing.TypeAlias = typing.AnyStr
 
