@@ -32,7 +32,7 @@ class LibraryBase(ABC):
         raise NotImplementedError('async Function: routine must be added')
 
 
-def str_to_bit(input_string: typing.AnyStr) -> list[int]:
+def str_to_bit(input_string: typing.AnyStr | bytes) -> list[int]:
     """Convert any string to list of 0 and 1 in integer format."""
     if not isinstance(input_string, bytes):
         str_integer_list = list(input_string.encode('utf-8'))
