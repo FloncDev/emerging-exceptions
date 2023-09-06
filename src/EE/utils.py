@@ -124,11 +124,14 @@ class Encryption(object):
         """Get result of the encryption or decryption"""
         if self.data == '':
             raise ValueError('You are trying to encrypt/decrypt nothing')
-        if self.enc_type is None or not isinstance(self.enc_type, mode):
+        if self.enc_type is None:  # or not isinstance(self.enc_type, mode)
             raise ValueError('Please choose a vaild encryption mode')
         if self.key is None:
             raise ValueError('Key have to be provided for the operation')
-        self.aes = AES.new(key=self.key.encode('utf-8'), mode=AES.MODE_ECB)
+        if isinstance(self.key, bytes):
+            self.aes = AES.new(key=self.key, mode=AES.MODE_ECB)
+        else:
+            self.aes = AES.new(key=self.key.encode('utf-8'), mode=AES.MODE_ECB)
         if self.enc_type == MODE_ENCRYPTION:
             if isinstance(self.data, bytes):
                 msg = self.aes.encrypt(pad(self.data, BLOCK_SIZE))
