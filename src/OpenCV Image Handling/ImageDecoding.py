@@ -9,46 +9,77 @@ import PIL
 from PIL import Image
 from PIL import ImageFilter
 import numpy as np
+import math
 
 
+def black_white(img):
+    """
 
-def black_white(img_path):
-    with Image.open(img_path) as im:
-        arr = np.array(im)
 
-        r = arr[:,:,0]
-        r2 = np.array(r.copy(), "int32")
-        g = arr[:,:,1]
-        g2 = np.array(g.copy(), "int32")
-        b = arr[:,:,2]
-        b2 = np.array(b.copy(), "int32")
-        
-        black = r2+g2+b2
+    Parameters
+    ----------
+    img : Image
+        Input Image file into this function.
 
-        for i in range(black.shape[0]):
-            for j in range(black.shape[1]):
-                if black[i,j] < 125:
-                    black[i,j] = 255
-                else:
-                    black[i,j] = 0
-                    
-        black2 = np.array(black.copy(), "uint8")
-        black_img = Image.fromarray(black2)
-        black_img = black_img.filter(ImageFilter.MinFilter(5))
-        return black_img
-    
+    Returns
+    -------
+    black_img : Image
+        Outputs pure B&W image, useful for finding orientation etc.
+
+    """
+    im = img
+    arr = np.array(im)
+
+    r = arr[:, :, 0]
+    r2 = np.array(r.copy(), "int32")
+    g = arr[:, :, 1]
+    g2 = np.array(g.copy(), "int32")
+    b = arr[:, :, 2]
+    b2 = np.array(b.copy(), "int32")
+
+    black = r2+g2+b2
+
+    for i in range(black.shape[0]):
+        for j in range(black.shape[1]):
+            if black[i, j] < 125:
+                black[i, j] = 255
+            else:
+                black[i, j] = 0
+
+    black2 = np.array(black.copy(), "uint8")
+    black_img = Image.fromarray(black2)
+    black_img = black_img.filter(ImageFilter.MinFilter(5))
+    return black_img
+
+
 def find_right_angle(img):
+    """
+
+
+    Parameters
+    ----------
+    img : Image
+        Input pure B&W image.
+
+    Returns
+    -------
+    img : Image
+        Returns image that has been rotated to be square .
+    angle : Float
+        Returns angle that the image had to be rotated by.
+
+    """
     arr = np.array(img)
-    
+
     cornerx = 0
     corner_y = 0
-    
+
     cornery = 0
     corner_x = 0
-        
+
     for x in range(arr.shape[0]):
         for y in range(arr.shape[1]):
-            if arr[x,y] == 255:
+            if arr[x, y] == 255:
                 if cornerx < x or cornerx == 0:
                     cornerx = x
                     corner_y = y
@@ -56,27 +87,49 @@ def find_right_angle(img):
                     cornery = y
                     corner_x = x
 
-    vert_len = corner_y-cornery    
+    vert_len = corner_y-cornery
     hor_len = corner_x-cornerx
     tan_angle = vert_len / hor_len
     anglerad = np.arctan(tan_angle)
     angle = anglerad * 180 / np.pi
+    if abs(angle) < 10:
+        angle = 0
     img = img.rotate((angle))
 
     return img, angle
 
+
 def crop_and_rotate_to_L(img):
+    """
+
+
+    Parameters
+    ----------
+    img : Image
+        Input pure B&W image that is square.
+
+    Returns
+    -------
+    img : Image
+        Image no longer rotates to correct upside-down code, Image is cropped and shrunk.
+    box : Tuple
+        Defines area to be cropped.
+    rot_num : Int
+        DEPRECATED.
+    arr2 : Numpy Array
+        DEPRECATED.
+
+    """
     img = img.filter(ImageFilter.MinFilter(3))
     arr = np.array(img)
     firstx = 0
     firsty = 0
     lastx = 0
     lasty = 0
-    
-    
+
     for x in range(arr.shape[0]):
         for y in range(arr.shape[1]):
-            if arr[x,y] == 255:
+            if arr[x, y] == 255:
                 if x < firstx or firstx == 0:
                     firstx = x
                 if y < firsty or firsty == 0:
@@ -87,80 +140,127 @@ def crop_and_rotate_to_L(img):
                     lasty = y
             else:
                 continue
-                    
 
-    box = (min(firsty,lasty),min(firstx,lastx),max(lasty,firsty),max(lastx,firstx))
-    
-    
+    box = (min(firsty, lasty), min(firstx, lastx),
+           max(lasty, firsty), max(lastx, firstx))
 
     img = img.crop(box)
     arr2 = np.array(img)
     img = Image.fromarray(arr2)
-    
+
     # maxx = arr2.shape[0]
     # maxy = arr2.shape[1]
-    
+
     # rot_num = 0
     # while arr2[(maxx-1),1] != 0:
 
     #     img = img.rotate(90)
     #     arr2 = np.array(img)
     #     rot_num = rot_num + 1
-        
+
     # img = img.rotate(90)
     # img = img.rotate(90)
     # rot_num = rot_num + 2
-    
-    return img, box #, rot_num,  arr2
 
-def centre_and_crop_img(img_path):
-    black_img = black_white(img_path)
+    return img, box  # , rot_num,  arr2
+
+
+def centre_and_crop_img(img):
+    """
+    
+
+    Parameters
+    ----------
+    img : Image
+        Handles image centreing, "squaring" (as in, like how a carpenters square forms a 90 degree angle) and cropping.
+
+    Returns
+    -------
+    img : Image
+        Image that is centred, squared, and cropped, for downsizing and decoding.
+
+    """
+    black_img = black_white(img)
+
     rot_black, angle = find_right_angle(black_img)
-    final_img , box = crop_and_rotate_to_L(rot_black)
-    with Image.open(img_path) as im:
-        img = im.rotate(angle)
-        img = img.crop(box)
-        if angle < -45:
-            img = img.rotate(90,0,1)
-        
+
+    final_img, box = crop_and_rotate_to_L(rot_black)
+
+    im = img
+    img = im.rotate(angle)
+    img = img.crop(box)
+    if angle < -45:
+        img = img.rotate(90, 0, 1)
+
     return img
 
+
 def resize_and_colour_correct(img):
-    img = img.resize((33,34),0)
-    img = img.crop((1,1,33,33))
+    """
+
+
+    Parameters
+    ----------
+    img : Image
+        Input squared off and cropped Datastamp.
+
+    Returns
+    -------
+    new_image : Image
+        Datastamp which is downscaled and colour corrected for ease of decoding.
+
+    """
+    img = img.resize((33, 34), 0)
+    img = img.crop((1, 1, 33, 33))
     arr = np.array(img)
-    r = arr[:,:,0]
-    g = arr[:,:,1]
-    b = arr[:,:,2]
+    r = arr[:, :, 0]
+    g = arr[:, :, 1]
+    b = arr[:, :, 2]
     for x in range(32):
         for y in range(32):
-            if r[x,y] > g[x,y] and r[x,y] > b[x,y]:
-                r[x,y] = 255
-                g[x,y] = 0
-                b[x,y] = 0
-            elif g[x,y] > r[x,y] and g[x,y] > b[x,y]:
-                r[x,y] = 0
-                g[x,y] = 255
-                b[x,y] = 0
-            elif b[x,y] > r[x,y] and b[x,y] > g[x,y]:
-                r[x,y] = 0
-                g[x,y] = 0
-                b[x,y] = 255
-    
+            if r[x, y] > g[x, y] and r[x, y] > b[x, y]:
+                r[x, y] = 255
+                g[x, y] = 0
+                b[x, y] = 0
+            elif g[x, y] > r[x, y] and g[x, y] > b[x, y]:
+                r[x, y] = 0
+                g[x, y] = 255
+                b[x, y] = 0
+            elif b[x, y] > r[x, y] and b[x, y] > g[x, y]:
+                r[x, y] = 0
+                g[x, y] = 0
+                b[x, y] = 255
+
     r_channel = Image.fromarray(r, "L")
     g_channel = Image.fromarray(g, "L")
     b_channel = Image.fromarray(b, "L")
-    
-    bands = (r_channel,g_channel,b_channel)
+
+    bands = (r_channel, g_channel, b_channel)
     new_image = Image.merge("RGB", bands)
-    
+
     return new_image
 
+
 def decode2(img):
+    """
+
+
+    Parameters
+    ----------
+    img : Image
+        Decodes Datastamp into a string.
+
+    Returns
+    -------
+    mystr : str
+        String decoded from datastamp.
+
+    """
     pixeldict = pixelise_img(img)
     pixellist = dict_to_list(pixeldict)
     mystr = colour_list_to_str2(pixellist)
     return mystr
+
 
 def pixelise_img(img) -> dict:
     """
@@ -188,63 +288,117 @@ def pixelise_img(img) -> dict:
         pixel_dict[f"{line_num}"] = line_list
     return pixel_dict
 
-def dict_to_list(pixel_dict:dict):
+
+def dict_to_list(pixel_dict: dict):
+    """
+
+
+    Parameters
+    ----------
+    pixel_dict : dict
+        Input dict.
+
+    Returns
+    -------
+    pixel_list : list
+        Output list.
+
+    Just a simple dict -> list function
+    """
     pixel_list = []
     for i in pixel_dict:
         pixel_list = pixel_list + pixel_dict[i]
     return pixel_list
 
+
 def colour_list_to_str2(colour_list: list):
-    r_colour = (255,0,0)
-    g_colour = (0,255,0)
-    b_colour = (0,0,255)
-    m_colour = (255,0,255)
-    c_colour = (0,255,255)
-    y_colour = (255,255,0)
-    w_colour = (255,255,255)
-    chr_list = []
+    """
+
+
+    Parameters
+    ----------
+    colour_list : list
+        Input list of colours.
+
+    Returns
+    -------
+    output_msg : str
+        Message decoded from UTF-8.
+
+    Inspired by Dels UTF-8 experiments
+
+    """
+    r_colour = (255, 0, 0)
+    g_colour = (0, 255, 0)
+    b_colour = (0, 0, 255)
+    m_colour = (255, 0, 255)
+    c_colour = (0, 255, 255)
+    y_colour = (255, 255, 0)
+    w_colour = (255, 255, 255)
     chr_decode = []
-    j=0
+    j = 0
     for i in colour_list:
-        if i == (0,0,0) or i == (0,0,0,0) or i == w_colour or i == w_colour + (255,) or j==2:
+        if i == (0, 0, 0) or i == (0, 0, 0, 0) or i == w_colour or i == w_colour + (255,) or j == 2:
             break
         elif i == r_colour or i == r_colour+(255,):
             chr_decode.append("0")
-            j=0
+            j = 0
         elif i == g_colour or i == g_colour+(255,):
             chr_decode.append("1")
-            j=0
+            j = 0
         elif i == b_colour or i == b_colour+(255,):
             chr_decode.append("2")
-            j=0
+            j = 0
         elif i == m_colour or i == m_colour+(255,):
             chr_decode.append("3")
-            j=0
+            j = 0
         elif i == c_colour or i == c_colour+(255,):
             chr_decode.append("4")
-            j=0
+            j = 0
         elif i == y_colour or i == y_colour+(255,):
             chr_decode.append("5")
-            j=0
+            j = 0
         else:
-            j=j+1
-    
+            j = j+1
+
     num_list = []
-    for i in range(0,len(chr_decode),5):
-        num = map(str,(chr_decode[i:i+5]))
+    for i in range(0, len(chr_decode), 5):
+        num = map(str, (chr_decode[i:i+5]))
         num2 = "".join(num)
         if num2 == "00010":
             break
-        num_list.append(int(num2,3))
-        
+        num_list.append(int(num2, 3))
+
     output_msg = bytes(num_list)
     return output_msg.decode("utf-8")
 
+
 def photo_to_str(img_path):
-    img = centre_and_crop_img(img_path)
+    """
+
+
+    Parameters
+    ----------
+    img_path : str
+        Input image path of Datastamp you wish to decode (NOTE, code must have a white background).
+
+    Returns
+    -------
+    mystr : str
+        Outputs data decoded from Datastamp.
+
+    """
+    with Image.open(img_path) as im:
+        imgsize = im.size
+        img = im.resize(
+            (math.floor(0.1*imgsize[0]), math.floor(0.1*imgsize[1])), 1)
+    img = centre_and_crop_img(img)
+
     img = resize_and_colour_correct(img)
+
     mystr = decode2(img)
     return mystr
+
 
 if __name__ == "__main__":
     img_path = input("Please input img path of image to be decoded \n")
