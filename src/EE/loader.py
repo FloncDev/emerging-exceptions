@@ -1,4 +1,5 @@
 """Code to load all the library."""
+import asyncio
 import importlib.util
 import json
 import os
@@ -6,6 +7,7 @@ import pathlib
 import typing
 
 import PIL.Image
+import utils
 
 path: typing.TypeAlias = pathlib.Path | str | os.PathLike
 pure_image: typing.TypeAlias = PIL.Image.Image
@@ -49,7 +51,7 @@ def get_library(paths: path) -> dict[str, path]:
     return return_dictionary
 
 
-def get_library_class(paths: path) -> dict[str, typing.Callable]:
+def get_library_class(paths: path) -> dict[str, typing.Callable | typing.Any]:
     """Retrieve the library class on the certain path."""
     library_list = get_library(paths)
     return_dict = {}
@@ -63,11 +65,20 @@ def get_library_class(paths: path) -> dict[str, typing.Callable]:
                 library_instance = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(library_instance)
                 return_dict[library] = getattr(library_instance, data['location'][1])
-        except AttributeError:  # noqa: E722
+        except FileNotFoundError:  # noqa: E722
             pass
     return return_dict
 
 
 if __name__ == '__main__':
     print(get_library(get_script_path()))
-    print(get_library_class(get_script_path()))
+    print(classes := get_library_class(get_script_path()))
+    Stego: typing.Callable = classes['Stego']
+    stego = Stego()
+    enc_data = asyncio.run(
+        stego.routine(utils.MODE_ENCRYPTION, {'img': PIL.Image.open('img.png'), 'passcode': 'test', 'msg': 'test'}))
+    print(enc_data)
+    dec_data = asyncio.run(stego.routine(utils.MODE_DECRYPTION,
+                                         {'img': PIL.Image.open(enc_data['img_down']), 'passcode': 'test',
+                                          'msg': 'test'}))
+    print(dec_data)
