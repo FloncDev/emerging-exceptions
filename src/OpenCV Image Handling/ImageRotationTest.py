@@ -44,8 +44,8 @@ def find_right_angle(img):
     cornery = 0
     corner_x = 0
         
-    for x in range(arr.shape[1]):
-        for y in range(arr.shape[0]):
+    for x in range(arr.shape[0]):
+        for y in range(arr.shape[1]):
             if arr[x,y] == 255:
                 if cornerx < x or cornerx == 0:
                     cornerx = x
@@ -60,7 +60,8 @@ def find_right_angle(img):
     tan_angle = vert_len / hor_len
     anglerad = np.arctan(tan_angle)
     angle = anglerad * 180 / np.pi
-    img = img.rotate(-(360 - angle))
+    img = img.rotate((angle))
+    print(angle)
 
 
     return img, angle
@@ -120,12 +121,14 @@ def centre_and_crop_img(img_path):
     with Image.open(img_path) as im:
         img = im.rotate(angle)
         img = img.crop(box)
-            
+        if angle < -45:
+            img = img.rotate(90,0,1)
+        
     return img
 
 def resize_and_colour_correct(img):
-    img = img.resize((33,33),0)
-    img = img.crop((1,0,33,32))
+    img = img.resize((33,34),0)
+    img = img.crop((1,1,33,33))
     arr = np.array(img)
     r = arr[:,:,0]
     g = arr[:,:,1]
