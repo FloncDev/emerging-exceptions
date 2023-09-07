@@ -56,15 +56,12 @@ def find_right_angle(img):
                     cornery = y
                     corner_x = x
 
-    print(f"{cornerx =} {cornery =} {corner_x =} {corner_y =}")
     vert_len = corner_y-cornery    
     hor_len = corner_x-cornerx
     tan_angle = vert_len / hor_len
     anglerad = np.arctan(tan_angle)
     angle = anglerad * 180 / np.pi
     img = img.rotate((angle))
-    print(angle)
-
 
     return img, angle
 
@@ -239,8 +236,6 @@ def colour_list_to_str2(colour_list: list):
         if num2 == "00010":
             break
         num_list.append(int(num2,3))
-    print(num_list)
-        
         
     output_msg = bytes(num_list)
     return output_msg.decode("utf-8")
@@ -252,4 +247,6 @@ def photo_to_str(img_path):
     return mystr
 
 if __name__ == "__main__":
-    print("start")
+    img_path = input("Please input img path of image to be decoded \n")
+    mystr = photo_to_str(img_path)
+    print(mystr)

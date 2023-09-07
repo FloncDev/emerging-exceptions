@@ -4,7 +4,7 @@ Created on Fri Sep  1 20:55:37 2023
 
 @author: TheKekening
 """
-import cv2
+# import cv2
 import PIL
 from PIL import Image
 from PIL import ImageEnhance
@@ -15,57 +15,57 @@ import math
 import typing
   
 # define a video capture object
-vid = cv2.VideoCapture(0)
+# vid = cv2.VideoCapture(0)
  
-def take_photo():
-    while(True):
+# def take_photo():
+#     while(True):
           
-        # Capture the video frame
-        # by frame
-        ret, frame = vid.read()
-        with Image.fromarray(frame) as im:
-            NewImg = PIL.Image.new("RGBA", im.size, None)
-            OldImg = im.crop((0,0)+(im.size))
-            NewImg.paste(OldImg, (0,0))
+#         # Capture the video frame
+#         # by frame
+#         ret, frame = vid.read()
+#         with Image.fromarray(frame) as im:
+#             NewImg = PIL.Image.new("RGBA", im.size, None)
+#             OldImg = im.crop((0,0)+(im.size))
+#             NewImg.paste(OldImg, (0,0))
             
-            centre_x = im.size[0]//2
-            centre_y = im.size[1]//2
+#             centre_x = im.size[0]//2
+#             centre_y = im.size[1]//2
             
             
-            with Image.open("Overlay.png") as overlay:
-                NewImg.alpha_composite(overlay,(centre_x-130,centre_y-130))
-            newframe = numpy.array(NewImg)
-        # Display the resulting frame
-        cv2.imshow('frame', newframe)
+#             with Image.open("Overlay.png") as overlay:
+#                 NewImg.alpha_composite(overlay,(centre_x-130,centre_y-130))
+#             newframe = numpy.array(NewImg)
+#         # Display the resulting frame
+#         cv2.imshow('frame', newframe)
           
-        # the 'c' button is set as the
-        # quitting button you may use any
-        # desired button of your choice
-        if cv2.waitKey(1) & 0xFF == ord('c'):
-            final = cv2.cvtColor(newframe, cv2.COLOR_BGR2RGB)
-            final = Image.fromarray(final)
-            new_image = final.crop((194,114,446,366))
-            img = new_image
-            px = img.load()
-            img_new = img.convert('RGBA')
-            px2 = img_new.load()
-            for x in range(img.size[0]):
-                for y in range(img.size[1]):
-                    if sum(px[x, y]) <= (255*0.3*3):
-                        px2[x, y] = (0,0,0,0)
-            img_new.save('test_result2.png')
+#         # the 'c' button is set as the
+#         # quitting button you may use any
+#         # desired button of your choice
+#         if cv2.waitKey(1) & 0xFF == ord('c'):
+#             final = cv2.cvtColor(newframe, cv2.COLOR_BGR2RGB)
+#             final = Image.fromarray(final)
+#             new_image = final.crop((194,114,446,366))
+#             img = new_image
+#             px = img.load()
+#             img_new = img.convert('RGBA')
+#             px2 = img_new.load()
+#             for x in range(img.size[0]):
+#                 for y in range(img.size[1]):
+#                     if sum(px[x, y]) <= (255*0.3*3):
+#                         px2[x, y] = (0,0,0,0)
+#             img_new.save('test_result2.png')
             
-            new_image.save("SavedCode.png")
-            time.sleep(2)
-            break
+#             new_image.save("SavedCode.png")
+#             time.sleep(2)
+#             break
     
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            time.sleep(2)
-            break
+#         if cv2.waitKey(1) & 0xFF == ord('q'):
+#             time.sleep(2)
+#             break
       
-    vid.release()
-    cv2.destroyAllWindows()
-    return new_image
+#     vid.release()
+#     cv2.destroyAllWindows()
+#     return new_image
 
 def downscale(img_path:str,out_path:str):
     with Image.open(img_path) as im:
@@ -399,6 +399,12 @@ def dict_to_list(pixel_dict:dict):
 def str_to_image(secret_str:str, img_size:tuple, out_path:str):
     collist = str_to_colour_list(secret_str)
     colour_list_to_image(collist, img_size, out_path)
+    with Image.open(out_path) as im:
+        new_image = Image.new("RGB",(33,34))
+        im.show()
+        new_image.paste(im,(1,1))
+        new_image.show()
+        new_image.save(out_path)
     return "done"
 
 def img_to_str(in_path:str):
