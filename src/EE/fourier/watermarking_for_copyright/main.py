@@ -13,27 +13,42 @@ def load_image():
     except FileNotFoundError:
         print("Image not found. Please check the path and try again.")
         return None
-def fourier_transform(image):
-    grayscale_image = image.convert("L")
-    image_matrix = np.array(grayscale_image)
+def shift_to_center(frequency_domain):
+    return np.fft.fftshift(frequency_domain)
 
-    frequency_domain = np.fft.fft2(image_matrix)
+def shift_to_corners(frequency_domain):
+    return np.fft.ifftshift(frequency_domain)
 
-    return frequency_domain
 
-def embed_watermark(frequency_domain, watermark_text):
-    watermark_array = np.array([[ord(char) for char in watermark_text]])
 
-    frequency_domain[0:1,0:watermark_array.shape[1]] = watermark_array
+def fourier_transform_color(image):
+    image_array = np.array(image)
+    red, green, blue = image_array[:, :, 0], image_array[:, :, 1], image_array[:, :, 2]
+    red_freq = shift_to_center(np.fft.fft2(red))
+    green_freq = shift_to_center(np.fft.fft2(green))
+    blue_freq = shift_to_center(np.fft.fft2(blue))
+    return red_freq, green_freq, blue_freq
 
-    return frequency_domain
 
-def inverse_fourier_transform(frequency_domain):
-    spatial_domain = np.fft.ifft2(frequency_domain)
-    spatial_domain = np.real(spatial_domain)
-    spatial_domain = np.uint8(spatial_domain)
 
-    return Image.fromarray(spatial_domain, "L")
+def embed_watermark_to_color_channel(magnitude, phase, watermark_array):
+    # Embed watermark into magnitude
+    magnitude[0:1, 0:watermark_array.shape[1]] = watermark_array
+
+    # Combine the modified magnitude with the original phase
+    frequency_domain_watermarked = magnitude * np.exp(1j * phase)
+
+    return frequency_domain_watermarked
+
+
+def inverse_fourier_transform_color(red_freq, green_freq, blue_freq):
+    red = np.fft.ifft2(shift_to_corners(red_freq))
+    green = np.fft.ifft2(shift_to_corners(green_freq))
+    blue = np.fft.ifft2(shift_to_corners(blue_freq))
+    color_image_array = np.stack([np.real(red), np.real(green), np.real(blue)], axis=2)
+    color_image_array = np.uint8(color_image_array)
+    return Image.fromarray(color_image_array, 'RGB')
+
 
 def save_image(image, watermark_text):
     try:
@@ -49,19 +64,31 @@ def main():
     if image:
         print(f"Successfully loaded image. Watermark text is: {watermark_text}")
 
-        frequency_domain_image = fourier_transform(image)
+        red_freq, green_freq, blue_freq = fourier_transform_color(image)
         print("Successfully loaded image to frequency domain.")
 
-        watermark_frequency = embed_watermark(frequency_domain_image, watermark_text)
+        watermark_array = np.array([[ord(char) for char in watermark_text]])
+
+        # Separate magnitude and phase for each color channel
+        red_magnitude, red_phase = np.abs(red_freq), np.angle(red_freq)
+        green_magnitude, green_phase = np.abs(green_freq), np.angle(green_freq)
+        blue_magnitude, blue_phase = np.abs(blue_freq), np.angle(blue_freq)
+
+        # Embed the watermark and get the watermarked frequency domain
+        red_freq_watermarked = embed_watermark_to_color_channel(red_magnitude, red_phase, watermark_array)
+        green_freq_watermarked = embed_watermark_to_color_channel(green_magnitude, green_phase, watermark_array)
+        blue_freq_watermarked = embed_watermark_to_color_channel(blue_magnitude, blue_phase, watermark_array)
+
         print("Successfully embedded watermark into frequency domain.")
 
-        watermarked_image = inverse_fourier_transform(watermark_frequency)
+        watermarked_image = inverse_fourier_transform_color(
+            red_freq_watermarked, green_freq_watermarked, blue_freq_watermarked
+        )
         print("Successfully transformed image back to spatial domain.")
 
-        save_image(watermarked_image,watermark_text)
+        save_image(watermarked_image, watermark_text)
     else:
         print("Failed to load image. Exiting.")
-
 
 if __name__ == "__main__":
     main()
