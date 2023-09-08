@@ -6,8 +6,6 @@ Created on Thu Sep  7 21:00:09 2023
 """
 import math
 import random
-
-import lorem
 import PIL
 from PIL import Image, ImageOps
 
@@ -58,7 +56,7 @@ def baseconvert2(num: int, base: int) -> str:
 
     Returns
     -------
-    str
+    return_str : str
         Returns the input number converted to the desired base, e.g. 2 in base 2 = 10.
 
     """
@@ -159,13 +157,13 @@ def colour_list_to_image(colour_list: list, image_size: tuple, out_path: str):
     background = PIL.Image.new("RGBA", image_size)
 
     background_datachunk = image_size[0]*image_size[1] // 5
-    lorem_text = ""
-
-    while len(lorem_text) < background_datachunk:
-        lorem_text = lorem_text + lorem.text()
-    lorem_text = "".join(list(lorem_text)[:(background_datachunk-1)])
-    lorem_col_list = str_to_colour_list2(lorem_text)
-    for pixel_num, col in enumerate(lorem_col_list):
+    b64_text = ""
+    b64_list = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","=","0","1","2","3","4","5","6","7","8","9","+","/"]
+    while len(b64_text) < background_datachunk:
+        b64_text = b64_text + random.choice(b64_list)
+    b64_text = "".join(list(b64_text)[:(background_datachunk-1)])
+    b64_col_list = str_to_colour_list2(b64_text)
+    for pixel_num, col in enumerate(b64_col_list):
         row_num = 0
         while pixel_num >= image_size[0]:
             row_num = row_num + 1
