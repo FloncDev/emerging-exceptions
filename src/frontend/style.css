@@ -135,9 +135,8 @@ a {
     height: 200px;
     border-radius: 10px;
     background-color: #1C1C1C;
-    z-index: 1;
+    z-index: -1;
     bottom: 25px;
-    transform: translateZ(0);
 }
 
 .input_panel {
@@ -152,7 +151,7 @@ a {
     position: relative;
     width: 650px;
     height: 650px;
-    z-index: 10000;
+    z-index: 2;
 }
 
 nav {
