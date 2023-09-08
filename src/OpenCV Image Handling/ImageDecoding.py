@@ -5,16 +5,14 @@ Created on Wed Sep  6 11:46:31 2023
 @author: TheKek
 """
 
-import PIL
-from PIL import Image
-from PIL import ImageFilter
-import numpy as np
 import math
+
+import numpy as np
+from PIL import Image, ImageFilter
 
 
 def black_white(img):
-    """
-
+    """Turns image into silhouette showing the black C in the Datastamp
 
     Parameters
     ----------
@@ -27,9 +25,8 @@ def black_white(img):
         Outputs pure B&W image, useful for finding orientation etc.
 
     """
-    im = img
-    arr = np.array(im)
-
+    arr = np.array(img)
+    arr = np.array(img)
     r = arr[:, :, 0]
     r2 = np.array(r.copy(), "int32")
     g = arr[:, :, 1]
@@ -53,8 +50,7 @@ def black_white(img):
 
 
 def find_right_angle(img):
-    """
-
+    """Rotates silhouette so that the C in the datastamp is facing right
 
     Parameters
     ----------
@@ -89,7 +85,10 @@ def find_right_angle(img):
 
     vert_len = corner_y-cornery
     hor_len = corner_x-cornerx
-    tan_angle = vert_len / hor_len
+    if hor_len != 0:
+        tan_angle = vert_len / hor_len
+    else:
+        tan_angle = 0
     anglerad = np.arctan(tan_angle)
     angle = anglerad * 180 / np.pi
     if abs(angle) < 10:
@@ -100,8 +99,7 @@ def find_right_angle(img):
 
 
 def crop_and_rotate_to_L(img):
-    """
-
+    """Crops silhouette and rotates it so that the left and bottom form an L
 
     Parameters
     ----------
@@ -120,7 +118,6 @@ def crop_and_rotate_to_L(img):
         DEPRECATED.
 
     """
-    img = img.filter(ImageFilter.MinFilter(3))
     arr = np.array(img)
     firstx = 0
     firsty = 0
@@ -142,7 +139,7 @@ def crop_and_rotate_to_L(img):
                 continue
 
     box = (min(firsty, lasty), min(firstx, lastx),
-           max(lasty, firsty), max(lastx, firstx))
+           max(lasty, firsty)+5, max(lastx, firstx)+5)
 
     img = img.crop(box)
     arr2 = np.array(img)
@@ -166,8 +163,7 @@ def crop_and_rotate_to_L(img):
 
 
 def centre_and_crop_img(img):
-    """
-    
+    """Centres and crops the input image
 
     Parameters
     ----------
@@ -185,7 +181,6 @@ def centre_and_crop_img(img):
     rot_black, angle = find_right_angle(black_img)
 
     final_img, box = crop_and_rotate_to_L(rot_black)
-
     im = img
     img = im.rotate(angle)
     img = img.crop(box)
@@ -196,8 +191,7 @@ def centre_and_crop_img(img):
 
 
 def resize_and_colour_correct(img):
-    """
-
+    """Resizes and colour corrects datastamp
 
     Parameters
     ----------
@@ -222,15 +216,19 @@ def resize_and_colour_correct(img):
                 r[x, y] = 255
                 g[x, y] = 0
                 b[x, y] = 0
+                continue
             elif g[x, y] > r[x, y] and g[x, y] > b[x, y]:
                 r[x, y] = 0
                 g[x, y] = 255
                 b[x, y] = 0
+                continue
             elif b[x, y] > r[x, y] and b[x, y] > g[x, y]:
                 r[x, y] = 0
                 g[x, y] = 0
                 b[x, y] = 255
-
+                continue
+            else:
+                return "Please input image taken from different lighting, undistorted"
     r_channel = Image.fromarray(r, "L")
     g_channel = Image.fromarray(g, "L")
     b_channel = Image.fromarray(b, "L")
@@ -242,8 +240,7 @@ def resize_and_colour_correct(img):
 
 
 def decode2(img):
-    """
-
+    """Decodes the datastamp into a string
 
     Parameters
     ----------
@@ -263,8 +260,7 @@ def decode2(img):
 
 
 def pixelise_img(img) -> dict:
-    """
-    Convert the image to dictionary of pixel.
+    """Convert the image to dictionary of pixel.
 
     Parameters
     ----------
@@ -290,8 +286,7 @@ def pixelise_img(img) -> dict:
 
 
 def dict_to_list(pixel_dict: dict):
-    """
-
+    """Just a simple dict -> list function
 
     Parameters
     ----------
@@ -303,7 +298,7 @@ def dict_to_list(pixel_dict: dict):
     pixel_list : list
         Output list.
 
-    Just a simple dict -> list function
+
     """
     pixel_list = []
     for i in pixel_dict:
@@ -312,8 +307,7 @@ def dict_to_list(pixel_dict: dict):
 
 
 def colour_list_to_str2(colour_list: list):
-    """
-
+    """Colour list is converted to string
 
     Parameters
     ----------
@@ -374,8 +368,7 @@ def colour_list_to_str2(colour_list: list):
 
 
 def photo_to_str(img_path):
-    """
-
+    """Converts photo to string
 
     Parameters
     ----------
@@ -390,17 +383,20 @@ def photo_to_str(img_path):
     """
     with Image.open(img_path) as im:
         imgsize = im.size
+
         img = im.resize(
-            (math.floor(0.1*imgsize[0]), math.floor(0.1*imgsize[1])), 1)
+            (math.floor(0.25*imgsize[0]), math.floor(0.25*imgsize[1])), 1)
+
     img = centre_and_crop_img(img)
-
     img = resize_and_colour_correct(img)
-
+    if img == "Please input image taken from different lighting, undistorted":
+        return "Please input image taken from different lighting, undistorted"
     mystr = decode2(img)
     return mystr
 
 
 if __name__ == "__main__":
+    # the functions should handle everything
     img_path = input("Please input img path of image to be decoded \n")
     mystr = photo_to_str(img_path)
     print(mystr)

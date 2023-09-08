@@ -4,18 +4,16 @@ Created on Thu Sep  7 21:00:09 2023
 
 @author: TheKek
 """
-import PIL
-from PIL import Image
-from PIL import ImageOps
 import math
 import random
+
 import lorem
-from lorem import text
+import PIL
+from PIL import Image, ImageOps
 
 
 def str_to_image(secret_str: str, out_path: str, img_size: tuple = (32, 32)):
-    """
-
+    """Converts input string to Datastamp
 
     Parameters
     ----------
@@ -47,7 +45,8 @@ def str_to_image(secret_str: str, out_path: str, img_size: tuple = (32, 32)):
 
 
 def baseconvert2(num: int, base: int) -> str:
-    """
+    """Converts from base 10 to a given base
+
     Function made by Del
 
     Parameters
@@ -81,8 +80,7 @@ def baseconvert2(num: int, base: int) -> str:
 
 
 def str_to_colour_list2(SecretMsg: str):
-    """
-
+    """Converts string to list of colours
 
     Parameters
     ----------
@@ -130,8 +128,7 @@ def str_to_colour_list2(SecretMsg: str):
 
 
 def colour_list_to_image(colour_list: list, image_size: tuple, out_path: str):
-    """
-
+    """Converts list of colours into the encoding portion of Datastamp
 
     Parameters
     ----------
@@ -144,7 +141,7 @@ def colour_list_to_image(colour_list: list, image_size: tuple, out_path: str):
 
     Returns
     -------
-    does not return any data, instead, the compiled image is outputted to the output path
+    Does not return any data, instead, the compiled image is outputted to the output path
 
     """
     col_list = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
