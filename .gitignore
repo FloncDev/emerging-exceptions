@@ -32,3 +32,12 @@ build/
 .vscode/
 # MacOS
 .DS_Store
+src/EE.egg-info/SOURCES.txt
+src/EE/3f4523996ea604698879d4a09b6326f6.png
+src/EE.egg-info/dependency_links.txt
+src/EE.egg-info/PKG-INFO
+src/EE.egg-info/top_level.txt
+src/EE/564eae2603a719053acb87d70b283c32.png
+src/EE/a82359d52aed3335a985fbdedcc38bde.png
+src/EE/test.py
+src/OpenCV Image Handling/img.png
