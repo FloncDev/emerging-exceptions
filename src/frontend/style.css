@@ -132,11 +132,16 @@ a {
 .metadata {
     position: relative;
     width: 650px;
-    height: 200px;
+    height: 140px;
     border-radius: 10px;
     background-color: #1C1C1C;
     z-index: -1;
     bottom: 25px;
+    box-sizing: border-box;
+    padding: 35px 50px 25px 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .input_panel {
@@ -152,6 +157,36 @@ a {
     width: 650px;
     height: 650px;
     z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 4px solid transparent;
+    border-radius: 10px;
+}
+
+.upload {
+    width: 250px;
+    height: 250px;
+    border-radius: 10px;
+    background: #282828;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.upload > h2 {
+    margin-bottom: 20px;
+    margin-top: 14px;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.upload > p {
+    margin: 0;
+    width: 200px;
 }
 
 nav {
@@ -160,4 +195,36 @@ nav {
     background-color: #1C1C1C;
     border-radius: 5px;
     margin-bottom: 25px;
+}
+
+.key {
+    color: rgba(255, 255, 255, 0.70);
+    font-size: 20px;
+    font-weight: 450;
+    text-align: left;
+    padding-right: 40px;
+}
+
+.value {
+    font-size: 20px;
+    font-weight: 450;
+    text-align: left;
+}
+
+.flash_green {
+    animation: flash_green 2s;
+}
+
+@keyframes flash_green {
+    0% {outline-color: #4F6445FF;}
+    100% {outline-color: #4F644500;}
+}
+
+.flash_red {
+    animation: flash_red 1s;
+}
+
+@keyframes flash_red {
+    0% {outline-color: #754040FF;}
+    100% {outline-color: #75404000;}
 }
