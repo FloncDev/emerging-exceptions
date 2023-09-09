@@ -195,6 +195,28 @@ nav {
     background-color: #1C1C1C;
     border-radius: 5px;
     margin-bottom: 25px;
+    display: flex;
+    flex-direction: row;
+}
+
+nav > a {
+    width: 33.3%;
+    text-decoration: none;
+}
+
+.nav_item {
+    text-align: center;
+    justify-content: center;
+    line-height: 66px;
+    color: #FFF;
+    font-weight: 300;
+    font-size: 32px;
+}
+
+.selected {
+    border-radius: 5px;
+    font-weight: 600;
+    background-color: #2F2F2F;
 }
 
 .key {
