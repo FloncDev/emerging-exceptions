@@ -25,8 +25,8 @@ def str_to_image(secret_str: str, out_path: str, img_size: tuple = (32, 32)):
 
     Returns
     -------
-    str
-        DESCRIPTION.
+    out_path: str
+        Return the output path of the image.
 
     """
     collist = str_to_colour_list2(secret_str)
@@ -44,7 +44,7 @@ def str_to_image(secret_str: str, out_path: str, img_size: tuple = (32, 32)):
         # be scanned
         new_image = w_background.resize((1000, 1000), 0)
         new_image.save(out_path)
-    return "done"
+    return out_path
 
 
 def baseconvert2(num: int, base: int) -> str:
