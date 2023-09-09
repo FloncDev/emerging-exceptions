@@ -72,7 +72,8 @@ class Select(Element):
 
         options = ""
         for option in self.options:
-            options += f"<option id='{option.id}'>{option.text}<option>\n"
+            options += f"<input type='radio' id='{option.id}' name='{self.id}'>\n"
+            options += f"<label for='{option.id}'>{option.text}</label><br>\n"
 
         return html.replace("{{title}}", self.title).replace("{{inputs}}", options)
 
@@ -95,7 +96,7 @@ class Dropdown(Element):
 
         options = ""
         for option in self.options:
-            options += f"<option id='{option.id}'>{option.text}<option>\n"
+            options += f"<option id='{option.id}'>{option.text}</option>\n"
 
         return (
             html.replace("{{title}}", self.title)
