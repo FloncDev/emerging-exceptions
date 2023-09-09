@@ -109,7 +109,8 @@ def crop_and_rotate_to_L(img):
     Returns
     -------
     img : Image
-        Image no longer rotates to correct upside-down code, Image is cropped and shrunk.
+        Image no longer rotates to correct upside-down code, Image is cropped
+        and shrunk.
     box : Tuple
         Defines area to be cropped.
     rot_num : Int
@@ -145,6 +146,9 @@ def crop_and_rotate_to_L(img):
     arr2 = np.array(img)
     img = Image.fromarray(arr2)
 
+    # NOTE: DEPRECATED (used to be able to rotate and scan Datastamp from any
+    # orientation, this feature made more problems than it solved,
+    # hence it has been discontinued)
     # maxx = arr2.shape[0]
     # maxy = arr2.shape[1]
 
@@ -168,12 +172,14 @@ def centre_and_crop_img(img):
     Parameters
     ----------
     img : Image
-        Handles image centreing, "squaring" (as in, like how a carpenters square forms a 90 degree angle) and cropping.
+        Handles image centreing, "squaring" (as in, like how a carpenters
+                                square forms a 90 degree angle) and cropping.
 
     Returns
     -------
     img : Image
-        Image that is centred, squared, and cropped, for downsizing and decoding.
+        Image that is centred, squared, and cropped, for
+        downsizing and decoding.
 
     """
     black_img = black_white(img)
@@ -201,7 +207,7 @@ def resize_and_colour_correct(img):
     Returns
     -------
     new_image : Image
-        Datastamp which is downscaled and colour corrected for ease of decoding.
+        Datastamp which is downscaled and colour corrected for ease of decoding
 
     """
     img = img.resize((33, 34), 0)
@@ -228,7 +234,8 @@ def resize_and_colour_correct(img):
                 b[x, y] = 255
                 continue
             else:
-                return "Please input image taken from different lighting, undistorted"
+                return """Please input image taken from different lighting,
+undistorted"""
     r_channel = Image.fromarray(r, "L")
     g_channel = Image.fromarray(g, "L")
     b_channel = Image.fromarray(b, "L")
@@ -238,133 +245,135 @@ def resize_and_colour_correct(img):
 
     return new_image
 
+# NOTE: DEPRECATED
+# def decode2(img):
+#     """Decodes the datastamp into a string
 
-def decode2(img):
-    """Decodes the datastamp into a string
+#     Parameters
+#     ----------
+#     img : Image
+#         Decodes Datastamp into a string.
 
-    Parameters
-    ----------
-    img : Image
-        Decodes Datastamp into a string.
+#     Returns
+#     -------
+#     mystr : str
+#         String decoded from datastamp.
 
-    Returns
-    -------
-    mystr : str
-        String decoded from datastamp.
+#     """
+#     pixeldict = pixelise_img(img)
+#     pixellist = dict_to_list(pixeldict)
+#     mystr = colour_list_to_str2(pixellist)
+#     return mystr
 
-    """
-    pixeldict = pixelise_img(img)
-    pixellist = dict_to_list(pixeldict)
-    mystr = colour_list_to_str2(pixellist)
-    return mystr
+# NOTE: DEPRECATED
+# def pixelise_img(img) -> dict:
+#     """Convert the image to dictionary of pixel.
 
+#     Parameters
+#     ----------
+#     img_path
+#         Input Image .
+#     Returns
+#     -------
+#     pixel_dict : Dict
+#         Returns Dictionary where each Line represents a row of pixels,
+#         the colour codes of these pixels are recorded in the dict.
+#     """
+#     pixel_dict = {}
 
-def pixelise_img(img) -> dict:
-    """Convert the image to dictionary of pixel.
-
-    Parameters
-    ----------
-    img_path
-        Input Image .
-    Returns
-    -------
-    pixel_dict : Dict
-        Returns Dictionary where each Line represents a row of pixels,
-        the colour codes of these pixels are recorded in the dict.
-    """
-    pixel_dict = {}
-
-    px = img.load()
-    img_size = img.size
-    for line_num in range(img_size[1]):
-        line_list = [0] * img_size[0]
-        for col_num in range(img_size[0]):
-            new_pixel = px[col_num, line_num]
-            line_list[col_num] = new_pixel
-        pixel_dict[f"{line_num}"] = line_list
-    return pixel_dict
-
-
-def dict_to_list(pixel_dict: dict):
-    """Just a simple dict -> list function
-
-    Parameters
-    ----------
-    pixel_dict : dict
-        Input dict.
-
-    Returns
-    -------
-    pixel_list : list
-        Output list.
+#     px = img.load()
+#     img_size = img.size
+#     for line_num in range(img_size[1]):
+#         line_list = [0] * img_size[0]
+#         for col_num in range(img_size[0]):
+#             new_pixel = px[col_num, line_num]
+#             line_list[col_num] = new_pixel
+#         pixel_dict[f"{line_num}"] = line_list
+#     return pixel_dict
 
 
-    """
-    pixel_list = []
-    for i in pixel_dict:
-        pixel_list = pixel_list + pixel_dict[i]
-    return pixel_list
+# NOTE: DEPRECIATED
+# def dict_to_list(pixel_dict: dict):
+#     """Just a simple dict -> list function
+
+#     Parameters
+#     ----------
+#     pixel_dict : dict
+#         Input dict.
+
+#     Returns
+#     -------
+#     pixel_list : list
+#         Output list.
 
 
-def colour_list_to_str2(colour_list: list):
-    """Colour list is converted to string
+#     """
+#     pixel_list = []
+#     for i in pixel_dict:
+#         pixel_list = pixel_list + pixel_dict[i]
+#     return pixel_list
 
-    Parameters
-    ----------
-    colour_list : list
-        Input list of colours.
+# NOTE: DEPRECATED
+# def colour_list_to_str2(colour_list: list):
+#     """Colour list is converted to string
 
-    Returns
-    -------
-    output_msg : str
-        Message decoded from UTF-8.
+#     Parameters
+#     ----------
+#     colour_list : list
+#         Input list of colours.
 
-    Inspired by Dels UTF-8 experiments
+#     Returns
+#     -------
+#     output_msg : str
+#         Message decoded from UTF-8.
 
-    """
-    r_colour = (255, 0, 0)
-    g_colour = (0, 255, 0)
-    b_colour = (0, 0, 255)
-    m_colour = (255, 0, 255)
-    c_colour = (0, 255, 255)
-    y_colour = (255, 255, 0)
-    w_colour = (255, 255, 255)
-    chr_decode = []
-    j = 0
-    for i in colour_list:
-        if i == (0, 0, 0) or i == (0, 0, 0, 0) or i == w_colour or i == w_colour + (255,) or j == 2:
-            break
-        elif i == r_colour or i == r_colour+(255,):
-            chr_decode.append("0")
-            j = 0
-        elif i == g_colour or i == g_colour+(255,):
-            chr_decode.append("1")
-            j = 0
-        elif i == b_colour or i == b_colour+(255,):
-            chr_decode.append("2")
-            j = 0
-        elif i == m_colour or i == m_colour+(255,):
-            chr_decode.append("3")
-            j = 0
-        elif i == c_colour or i == c_colour+(255,):
-            chr_decode.append("4")
-            j = 0
-        elif i == y_colour or i == y_colour+(255,):
-            chr_decode.append("5")
-            j = 0
-        else:
-            j = j+1
+#     Inspired by Dels UTF-8 experiments
 
-    num_list = []
-    for i in range(0, len(chr_decode), 5):
-        num = map(str, (chr_decode[i:i+5]))
-        num2 = "".join(num)
-        if num2 == "00010":
-            break
-        num_list.append(int(num2, 3))
+#     """
+#     r_colour = (255, 0, 0)
+#     g_colour = (0, 255, 0)
+#     b_colour = (0, 0, 255)
+#     m_colour = (255, 0, 255)
+#     c_colour = (0, 255, 255)
+#     y_colour = (255, 255, 0)
+#     w_colour = (255, 255, 255)
+#     chr_decode = []
+#     j = 0
+#     for i in colour_list:
+#         if i == (0, 0, 0) or i == (0, 0, 0, 0) or i == w_colour or
+#            i == w_colour + (255,) or j == 2:
+#             break
+#         elif i == r_colour or i == r_colour+(255,):
+#             chr_decode.append("0")
+#             j = 0
+#         elif i == g_colour or i == g_colour+(255,):
+#             chr_decode.append("1")
+#             j = 0
+#         elif i == b_colour or i == b_colour+(255,):
+#             chr_decode.append("2")
+#             j = 0
+#         elif i == m_colour or i == m_colour+(255,):
+#             chr_decode.append("3")
+#             j = 0
+#         elif i == c_colour or i == c_colour+(255,):
+#             chr_decode.append("4")
+#             j = 0
+#         elif i == y_colour or i == y_colour+(255,):
+#             chr_decode.append("5")
+#             j = 0
+#         else:
+#             j = j+1
 
-    output_msg = bytes(num_list)
-    return output_msg.decode("utf-8")
+#     num_list = []
+#     for i in range(0, len(chr_decode), 5):
+#         num = map(str, (chr_decode[i:i+5]))
+#         num2 = "".join(num)
+#         if num2 == "00010":
+#             break
+#         num_list.append(int(num2, 3))
+
+#     output_msg = bytes(num_list)
+#     return output_msg.decode("utf-8")
 
 
 def photo_to_str(img_path):
@@ -373,7 +382,8 @@ def photo_to_str(img_path):
     Parameters
     ----------
     img_path : str
-        Input image path of Datastamp you wish to decode (NOTE, code must have a white background).
+        Input image path of Datastamp you wish to decode
+        (NOTE, code must have a white background).
 
     Returns
     -------
@@ -391,8 +401,77 @@ def photo_to_str(img_path):
     img = resize_and_colour_correct(img)
     if img == "Please input image taken from different lighting, undistorted":
         return "Please input image taken from different lighting, undistorted"
-    mystr = decode2(img)
+    mystr = decode3(img)
     return mystr
+
+# NOTE: DEPRECATED
+# def tob10(i):
+#     """Code Which converts a list of base 3 into a list of base 10 integers
+
+#     Parameters
+#     ----------
+#     i : List
+#         List of base 3.
+
+#     Returns
+#     -------
+#     outVal : Int
+#         Summed list when converted to base 10.
+
+#     """
+#     outVal = 0
+#     for ii in map(int, i):
+#         outVal = 3 * outVal + ii
+#     return outVal
+
+
+def decode3(image):
+    """Decodes image
+
+    (Function written by @ok.and., modified by @thekekening and @deleted.user0)
+
+
+    Parameters
+    ----------
+    image : Image
+        Input downscaled Datastamp.
+
+    Returns
+    -------
+    decoded string
+        String of decoded text.
+
+    """
+    img = image.convert("RGB")
+    ta = list(img.getdata())
+    decoded = ""
+    counter = 0
+    pixels = 0
+    decoded_list = []
+    for i in ta:
+        if i[0] == 255 or i[0] == 254:
+            decoded = decoded + "0"
+        elif i[1] == 255 or i[1] == 254:
+            decoded = decoded + "1"
+        elif i[2] == 255 or i[2] == 254:
+            decoded = decoded + "2"
+        else:
+            counter += 1
+            continue
+        if pixels == 4:
+            pixels = 0
+            decoded_list.append(decoded)
+            decoded = ''
+            continue
+        pixels += 1
+    decList = []
+    for i in decoded_list:
+        thisChar = int(i, 3)
+        if thisChar == 3:
+            break
+        decList.append(thisChar)
+    out_bytes = bytes(decList)
+    return out_bytes.decode("utf-8")
 
 
 if __name__ == "__main__":

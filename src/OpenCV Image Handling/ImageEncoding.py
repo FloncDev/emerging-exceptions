@@ -6,6 +6,7 @@ Created on Thu Sep  7 21:00:09 2023
 """
 import math
 import random
+
 import PIL
 from PIL import Image, ImageOps
 
@@ -33,10 +34,14 @@ def str_to_image(secret_str: str, out_path: str, img_size: tuple = (32, 32)):
     with Image.open(out_path) as im:
         new_image = Image.new("RGB", (33, 34))
         new_image.paste(im, (1, 1))
+        # The "new_image" variable is used to form the black C shape
+        # The black C shape is used for orientation purposes
         w_background = Image.new("L", (35, 36))
         w_background = ImageOps.colorize(
             w_background, (255, 255, 255), (255, 255, 255))
         w_background.paste(new_image, (1, 1))
+        # The white background is necessary for the datastamp to successfully
+        # be scanned
         new_image = w_background.resize((1000, 1000), 0)
         new_image.save(out_path)
     return "done"
@@ -45,7 +50,7 @@ def str_to_image(secret_str: str, out_path: str, img_size: tuple = (32, 32)):
 def baseconvert2(num: int, base: int) -> str:
     """Converts from base 10 to a given base
 
-    Function made by Del
+    Function made by deleted.user0 on discord
 
     Parameters
     ----------
@@ -57,7 +62,8 @@ def baseconvert2(num: int, base: int) -> str:
     Returns
     -------
     return_str : str
-        Returns the input number converted to the desired base, e.g. 2 in base 2 = 10.
+        Returns the input number converted to the desired base,
+        e.g. 2 in base 2 = 10.
 
     """
     if base == 10:
@@ -107,7 +113,10 @@ def str_to_colour_list2(SecretMsg: str):
         base_3_list.append(base_3_num)
 
     base_3_list.append("00010")
-
+    # Every character in the string is converted from their UTF-8 Decimal
+    # to base 3 (used to represent R G and B) Base 6 was tried which included
+    # Y M and C, but ultimately failed, as the computer would struggle
+    # distinguishing the secondary colours as such.
     for j in str(base_3_list):
         if j == "0":
             colour_list.append(r_colour)
@@ -139,9 +148,11 @@ def colour_list_to_image(colour_list: list, image_size: tuple, out_path: str):
 
     Returns
     -------
-    Does not return any data, instead, the compiled image is outputted to the output path
+    Does not return any data, instead,
+    the compiled image is outputted to the output path
 
     """
+    # The first for loop encodes the data encoding portion of the Datastamp
     col_list = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
     if len(colour_list) > (image_size[0] * image_size[1]):
         return "Colour list is too big for given size of image"
@@ -153,12 +164,17 @@ def colour_list_to_image(colour_list: list, image_size: tuple, out_path: str):
             pixel_num = pixel_num - image_size[0]
         px = new_image.load()
         px[pixel_num, row_num] = col
-
+    # The second for loop encodes random data, to help visually hide the data
+    # encoding portion of the datastamp
     background = PIL.Image.new("RGBA", image_size)
-
     background_datachunk = image_size[0]*image_size[1] // 5
     b64_text = ""
-    b64_list = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","=","0","1","2","3","4","5","6","7","8","9","+","/"]
+    b64_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
+                "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x",
+                "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+                "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+                "W", "X", "Y", "Z", "=", "0", "1", "2", "3", "4", "5", "6",
+                "7", "8", "9", "+", "/"]
     while len(b64_text) < background_datachunk:
         b64_text = b64_text + random.choice(b64_list)
     b64_text = "".join(list(b64_text)[:(background_datachunk-1)])
@@ -171,17 +187,18 @@ def colour_list_to_image(colour_list: list, image_size: tuple, out_path: str):
         px = background.load()
         px[pixel_num, row_num] = col
 
+    # The final for loop encodes purely random colours, this is done to fill
+    # the last few pixels of the Datastamp, and prevent a blot of black at the
+    # end of the coloured portion
     background2 = PIL.Image.new("RGBA", image_size)
-
+    px = background2.load()
     for pixel_num in range(image_size[0] * image_size[1]):
         row_num = 0
         while pixel_num >= image_size[0]:
             row_num = row_num + 1
             pixel_num = pixel_num - image_size[0]
-        px = background2.load()
         px[pixel_num, row_num] = random.choice(col_list)
         pixel_num = pixel_num + 1
-
     background2.alpha_composite(background, (0, 0))
     background2.alpha_composite(new_image, (0, 0))
     background2.save(out_path)
