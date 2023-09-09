@@ -31,25 +31,25 @@
         </div>
    </div>
 </body>
-    <script>
-        let readmeurl = window.location.origin + "/rendered_readme"
+<script>
+    let readmeurl = window.location.origin + "/rendered_readme"
 
-        fetch(readmeurl)
-            .then(resp => resp.text())
-            .then(text => {
-                document.getElementById("readme").innerHTML = text.slice(1, text.length-1);
-        });
+    fetch(readmeurl)
+        .then(resp => resp.text())
+        .then(text => {
+            document.getElementById("readme").innerHTML = text.slice(1, text.length-1);
+    });
 
-        let btns = document.getElementsByClassName("btn");
+    let btns = document.getElementsByClassName("btn");
 
-        console.log(btns, btns.length)
+    console.log(btns, btns.length)
 
-        for (let i = 0; i < btns.length; i++) {
-            console.log(i)
-            btns[i].addEventListener("click", () => {
-                console.log("clicked")
-                window.location = btns[i].getAttribute("href");
-            })
-        }
-    </script>
+    for (let i = 0; i < btns.length; i++) {
+        console.log(i)
+        btns[i].addEventListener("click", () => {
+            console.log("clicked")
+            window.location = btns[i].getAttribute("href");
+        })
+    }
+</script>
 </html>
