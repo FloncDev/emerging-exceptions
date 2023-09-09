@@ -47,14 +47,19 @@ async def components(module: str = "fourier", encode: bool = False):
     """Return components as html"""
     match module:
         case "fourier":
-            components = []
+            components = [
+                Text("Title here", "asd", TextType.Small, "Hello, World!"),
+                Text("Title here", "asd", TextType.Small, "Hello, World!"),
+                Text("Title here", "asd", TextType.Small, "Hello, World!"),
+                Text("Title here", "asd", TextType.Small, "Hello, World!"),
+                Text("Title here", "asd", TextType.Small, "Hello, World!"),
+            ]
 
         case "datastamp":
-            components = []
+            components = [Text("Title here", "asd", TextType.Small, "Hello, World!")]
 
         case "steg":
             components = [Text("Title here", "asd", TextType.Small, "Hello, World!")]
-            print(components[0].type)
 
     with open("src/frontend/components/style.html") as f:
         html = f.read() + "\n".join(i.html() for i in components)
