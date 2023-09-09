@@ -17,27 +17,28 @@
                     <h1 class="team_name">Emerging Exceptions</h1>
             </header>
 
+            <div class="encryption_type">
+                <div class="encode_btn">Encode</div>
+                <div class="decode_btn">Decode</div>
+            </div>
+
             <div class="controls">
-                {{inputs}}
+            </div>
+
+            <div class="submit">
+                Submit
             </div>
         </div>
 
 
         <div class="app_right">
             <nav>
-                <a href="">
-                    <div class="nav_item selected">Fourier Watermark</div>
-                </a>
-                <a href="">
-                    <div class="nav_item">Steganography</div>
-                </a>
-                <a href="">
-                    <div class="nav_item">Datastamp</div>
-                </a>
+                <div class="nav_item selected" id="fourier_btn">Fourier Watermark</div>
+                <div class="nav_item" id="steg_btn">Steganography</div>
+                <div class="nav_item" id="datastamp_btn">Datastamp</div>
             </nav>
 
             <div class="panels">
-                <!-- Copy if mode is not disco scan - remove input option and change class -->
                 <div class="input_panel">
                     <div class="image" id="image">
                         <div class="upload" id="upload">
@@ -83,7 +84,15 @@
                     </div>
                 </div>
 
-                <div></div>
+                <div class="out_panel">
+                    <div class="image">
+
+                    </div>
+
+                    <div class="metadata">
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>

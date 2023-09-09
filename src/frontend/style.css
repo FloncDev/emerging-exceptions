@@ -183,6 +183,10 @@ a {
     justify-content: center;
     outline: 4px solid transparent;
     border-radius: 10px;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: contain;
 }
 
 .upload {
@@ -281,4 +285,10 @@ nav {
     line-height: 75px;
     cursor: pointer;
     margin-top: 25px;
+}
+
+img {
+    min-width: 100%;
+    min-height: 100%;
+    flex-shrink: 0;
 }
