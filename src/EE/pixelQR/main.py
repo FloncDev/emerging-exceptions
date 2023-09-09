@@ -37,7 +37,7 @@ class PixelQR(utils.LibraryBase):  # noqa: E501
             if data_input['en/dec'] == 'aes256':
                 encryption_box = utils.Encryption(data_input['passcode'], utils.MODE_ENCRYPTION)
                 encryption_box.setData(data_input['msg'].encode('utf-8'))
-                data = base64.b64encode(encryption_box.getResult())
+                data = base64.b64encode(encryption_box.getResult()).decode('utf-8')
             else:
                 data = data_input['msg']
             pathname_gen = ''.join(random.choices('0123456789abcdef', k=32)) + '.png'
