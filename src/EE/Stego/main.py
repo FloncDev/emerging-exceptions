@@ -63,16 +63,10 @@ class Steganography(utils.LibraryBase):  # noqa: E501
 
     def __init__(self):
         super().__init__()
-        self.enc_input = [{"field": "Encryption Method", 'options': [{"name": "No encryption", "id": "none"},
-                                                                     {"name": "AES-256", "id": "aes256"}],
-                           'type': 'select', 'id': 'en/dec'},
-                          {"field": "Message", 'type': 'text_large', 'id': 'msg'},
+        self.enc_input = [{"field": "Message", 'type': 'text_large', 'id': 'msg'},
                           {"field": "Secret(Required to decrypt the image)", 'type': 'text_small', 'id': 'passcode'},
                           {"field": "Image", 'type': 'image_button', 'id': 'img'}]
-        self.dec_input = [{"field": "Encryption Method", 'options': [{"name": "No encryption", "id": "none"},
-                                                                     {"name": "AES-256", "id": "aes256"}],
-                           'type': 'select', 'id': 'en/dec'},
-                          {"field": "Secret(Required to decrypt the image)", 'type': 'text_small', 'id': 'passcode'},
+        self.dec_input = [{"field": "Secret(Required to decrypt the image)", 'type': 'text_small', 'id': 'passcode'},
                           {"field": "Image", 'type': 'image_button', 'id': 'img'}]
         self.enc_output = [{"type": "image_button", "id": "img_down"}]
         self.dec_output = [{"type": "msg", "id": "msg"}]
