@@ -116,7 +116,7 @@ class Encryption(object):
                 pass
         self.enc_type = enc_type
 
-    def setData(self, stream_content: str):
+    def setData(self, stream_content: str | bytes):
         """Set data to be encrypt or decrypt."""
         self.data = stream_content
 
