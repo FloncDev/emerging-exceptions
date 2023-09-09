@@ -8,6 +8,7 @@
 html {
     padding: 0;
     margin: 0;
+    overflow: hidden
 }
 
 body {
@@ -109,11 +110,31 @@ a {
 }
 
 .controls {
-    background-color: black;
     width: 475px;
-    height: 100%;
+    height: 85%;
     margin-right: 50px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-left: 17px;
+    padding-top: 25px;
+    box-sizing: content-box;
+    direction: rtl;
 }
+
+.controls::-webkit-scrollbar {
+    width: 5px;
+}
+
+.controls::-webkit-scrollbar-track {
+    background-color: #1C1C1C;
+    border-radius: 10px;
+}
+
+.controls::-webkit-scrollbar-thumb {
+    background: #2F2F2F;
+    border-radius: 10px;
+}
+
 
 .panels {
     width: 1325px;
@@ -199,18 +220,16 @@ nav {
     flex-direction: row;
 }
 
-nav > a {
+.nav_item {
     width: 33.3%;
     text-decoration: none;
-}
-
-.nav_item {
     text-align: center;
     justify-content: center;
     line-height: 66px;
     color: #FFF;
     font-weight: 300;
     font-size: 32px;
+    cursor: pointer;
 }
 
 .selected {
@@ -249,4 +268,17 @@ nav > a {
 @keyframes flash_red {
     0% {outline-color: #754040FF;}
     100% {outline-color: #75404000;}
+}
+
+.submit {
+    width: 275px;
+    height: 75px;
+    font-size: 40px;
+    font-weight: 500;
+    background-color: #2F2F2F;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 75px;
+    cursor: pointer;
+    margin-top: 25px;
 }
