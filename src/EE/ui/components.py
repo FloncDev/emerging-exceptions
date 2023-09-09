@@ -1,6 +1,8 @@
 """UI Components"""
 from enum import Enum
 
+COMPONENT_DIR = "src/frontend/components"
+
 
 class Element:
     """Base class for all elements"""
@@ -13,8 +15,8 @@ class Element:
 class TextType(Enum):
     """Enum for different text types"""
 
-    Large = 0
     Small = 0
+    Large = 1
 
 
 class Text(Element):
@@ -24,12 +26,25 @@ class Text(Element):
         self,
         title: str,
         id: str,
-        default: str,
         type: TextType = TextType.Small,
+        default: str = "",
     ) -> None:
         super().__init__(title, id)
-        self.default = default
         self.type = type
+        self.default = default
+
+    def html(self) -> str:
+        """Return the components HTML"""
+        with open(
+            COMPONENT_DIR + f"/text_{str(self.type).split('.')[1].lower()}.html"
+        ) as f:
+            html = f.read()
+
+        return (
+            html.replace("{{title}}", self.title)
+            .replace("{{id}}", self.id)
+            .replace("{{default}}", self.default)
+        )
 
 
 class SelectOption:
@@ -50,6 +65,17 @@ class Select(Element):
         self.options = options
         self.default = default
 
+    def html(self) -> str:
+        """Return the components HTML"""
+        with open(COMPONENT_DIR + "/select.html") as f:
+            html = f.read()
+
+        options = ""
+        for option in self.options:
+            options += f"<option id='{option.id}'>{option.text}<option>\n"
+
+        return html.replace("{{title}}", self.title).replace("{{inputs}}", options)
+
 
 class Dropdown(Element):
     """
@@ -61,3 +87,18 @@ class Dropdown(Element):
     def __init__(self, title: str, id: str, options: list[SelectOption]) -> None:
         super().__init__(title, id)
         self.options = options
+
+    def html(self) -> str:
+        """Return the components HTML"""
+        with open(COMPONENT_DIR + "/dropdown.html") as f:
+            html = f.read()
+
+        options = ""
+        for option in self.options:
+            options += f"<option id='{option.id}'>{option.text}<option>\n"
+
+        return (
+            html.replace("{{title}}", self.title)
+            .replace("{{id}}", self.id)
+            .replace("{{inputs}}", options)
+        )
