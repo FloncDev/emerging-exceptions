@@ -18,8 +18,8 @@
             </header>
 
             <div class="encryption_type">
-                <div class="encode_btn">Encode</div>
-                <div class="decode_btn">Decode</div>
+                <div id="encode_btn" onclick="encode=true; get_inputs()">Encode</div>
+                <div id="decode_btn" onclick="encode=false; get_inputs()">Decode</div>
             </div>
 
             <div class="controls">
@@ -98,6 +98,6 @@
     </div>
 
 
-    <script src="app.js"></script>
+    <script defer src="app.js"></script>
 </body>
 </html>

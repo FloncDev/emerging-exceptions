@@ -55,6 +55,10 @@ async def components(module: str = "fourier", encode: bool = False):
                 Text("Title here", "asd", TextType.Small, "Hello, World!"),
             ]
 
+            if not encode:
+                for comp in components:
+                    comp.title = "Another title"
+
         case "datastamp":
             components = [Text("Title here", "asd", TextType.Small, "Hello, World!")]
 

@@ -1,3 +1,6 @@
+let encode = true;
+let module = "fourier"
+
 const upload = document.getElementById("image");
 const center_upload = document.getElementById("upload");
 
@@ -35,7 +38,6 @@ upload.addEventListener("drop", e => {
                 }
 
                 console.log(file, file.type)
-                // Send file to backend
 
                 upload.innerHTML = ``
 
@@ -72,25 +74,28 @@ for (let i = 0; i < nav_items.length; i++) {
 fourier_btn.addEventListener("click", e => {
     // Needs both input and output panel
     output_panel.hidden = false
-    get_inputs("fourier")
+    module = "fourier"
+    get_inputs()
 })
 
 steg_btn.addEventListener("click", e => {
     // Only needs input
     output_panel.hidden = true
-    get_inputs("steg")
+    module = "steg"
+    get_inputs()
 })
 
 datastamp_btn.addEventListener("click", e => {
     // Only needs input
     output_panel.hidden = true
-    get_inputs("datastamp")
+    module = "datastamp"
+    get_inputs()
 })
 
 let controls = document.getElementsByClassName("controls")[0]
 
-function get_inputs(module) {
-    fetch(window.location.origin + "/components?module="+module)
+function get_inputs() {
+    fetch(window.location.origin + `/components?module=${module}&encode=${encode}`)
     .then(resp => resp.text())
     .then(text => {
         controls.innerHTML = text
@@ -98,4 +103,5 @@ function get_inputs(module) {
     })
 }
 
-get_inputs("fourier")
+
+get_inputs()
