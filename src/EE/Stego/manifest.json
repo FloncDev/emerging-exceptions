@@ -1,0 +1,8 @@
+{
+  "name": "Stego - Make message hidden seemlessly inside an image with encryption",
+  "location": [
+    "main.py",
+    "Steganography"
+  ],
+  "call_name": "stego"
+}
