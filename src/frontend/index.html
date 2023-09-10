@@ -18,7 +18,7 @@
 
    <div class="main">
         <div class="left">
-            <iframe src="https://www.youtube-nocookie.com/embed/hgI0p1zf31k?si=V_EnsD6wHQzxcmku" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe src="https://www.youtube-nocookie.com/embed/" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen id="embed"></iframe>
 
             <div class="buttons">
                 <div class="btn start" href="/app.html">Launch Web App</div>
@@ -51,5 +51,13 @@
             window.location = btns[i].getAttribute("href");
         })
     }
+
+    let yt_embed = document.getElementById("embed")
+
+    fetch("/youtube_id")
+    .then(resp => resp.text())
+    .then(text => {
+        yt_embed.setAttribute("src", yt_embed.getAttribute("src")+text.slice(1, -1))
+    })
 </script>
 </html>
