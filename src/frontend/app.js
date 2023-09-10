@@ -99,9 +99,82 @@ function get_inputs() {
     .then(resp => resp.text())
     .then(text => {
         controls.innerHTML = text
-        console.log(text)
     })
 }
 
+function read_inputs() {
+    let data = {}
+
+    for (let i=0; i<controls.children.length; i++) {
+        let e = controls.children.item(i)
+
+        switch (e.className.split(" ")[0]) {
+            case "text_small":
+                input = e.children[1]
+
+                data[input.id] = input.value
+                break
+
+            case "text_large":
+                input = e.children[1]
+
+                data[input.id] = input.value
+                break
+
+            case "select":
+                form = e.children[1]
+
+                for (let i=0;i<form.length;i++) {
+                    element = form.elements[i]
+                    if (element.checked) {
+                        data[form.id] = element.id
+                        break
+                    }
+                }
+
+                break
+
+            case "dropdown":
+                select = e.children[1]
+                selected = select.value
+
+                for (let i=0;i<select.length;i++) {
+                    element = select.children[i]
+
+                    console.log(element)
+
+                    if (element.value == selected) {
+                        data[select.id] = element.id
+                        break
+                    }
+                }
+
+                break
+        }
+    }
+
+    return data
+}
+
+const submit_btn = document.getElementById("submit")
+
+submit_btn.addEventListener("click", e => {
+    let data = new FormData()
+    data.append("image", file)
+    data.append("data", JSON.stringify({
+        "module": module,
+        "is_encode": encode,
+        "inputs": JSON.stringify(read_inputs())
+        // Get data from inputs
+    }))
+
+    fetch("/process", {
+        method: "POST",
+        body: data
+    })
+    .then(resp => {
+        resp.text().then(a => console.log(a))
+    })
+})
 
 get_inputs()

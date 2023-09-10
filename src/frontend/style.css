@@ -286,12 +286,6 @@ nav {
     margin-top: 25px;
 }
 
-img {
-    min-width: 100%;
-    min-height: 100%;
-    flex-shrink: 0;
-}
-
 .encryption_type {
     display: flex;
     flex-direction: row;
