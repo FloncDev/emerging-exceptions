@@ -1,5 +1,5 @@
 let encode = true;
-let module = "fourier"
+let module = "datastamp"
 
 const upload = document.getElementById("image");
 const center_upload = document.getElementById("upload");
@@ -77,7 +77,7 @@ upload.addEventListener("drop", e => {
     }
 })
 
-let fourier_btn = document.getElementById("fourier_btn")
+// let fourier_btn = document.getElementById("fourier_btn")
 let steg_btn = document.getElementById("steg_btn")
 let datastamp_btn = document.getElementById("datastamp_btn")
 
@@ -95,25 +95,23 @@ for (let i = 0; i < nav_items.length; i++) {
     })
 }
 
-const input_panel = document.getElementById("input_panel")
-
-fourier_btn.addEventListener("click", e => {
-    // Needs both input and output panel
-    input_panel.hidden = false
-    module = "fourier"
-    get_inputs()
-})
+// fourier_btn.addEventListener("click", e => {
+//     // Needs both input and output panel
+//     output_panel.hidden = false
+//     module = "fourier"
+//     get_inputs()
+// })
 
 steg_btn.addEventListener("click", e => {
     // Only needs input
-    input_panel.hidden = false
+    output_panel.hidden = false
     module = "steg"
     get_inputs()
 })
 
 datastamp_btn.addEventListener("click", e => {
     // Only needs input
-    input_panel.hidden = true
+    output_panel.hidden = true
     module = "datastamp"
     get_inputs()
 })
@@ -186,7 +184,7 @@ const submit_btn = document.getElementById("submit")
 
 submit_btn.addEventListener("click", e => {
     let data = new FormData()
-    if (file != null) {data.append("image", file)}
+    data.append("image", file)
     data.append("data", JSON.stringify({
         "module": module,
         "is_encode": encode,

@@ -63,7 +63,7 @@ async def get_app():
 
 
 @app.get("/components")
-async def components(module: str = "fourier", encode: bool = False):
+async def components(module: str = "datastamp", encode: bool = False):
     """Return components as html"""
     class_dict = loader.get_library_class(loader.get_script_path())
     print(class_dict)
