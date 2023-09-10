@@ -202,6 +202,7 @@ def colour_list_to_image(colour_list: list, image_size: tuple):
     background2.alpha_composite(new_image, (0, 0))
     return background2
 
+
 if __name__ == "__main__":
     input_str = input(
         "Please input the message you would like to encode in image \n")
