@@ -24,7 +24,10 @@ class LibraryBase(ABC):
     """The base of the library instance."""
 
     def __init__(self):
-        pass
+        self.enc_input = []
+        self.dec_input = []
+        self.enc_output = []
+        self.dec_output = []
 
     @abstractmethod
     async def routine(self, mode: mode, data_input: dict):

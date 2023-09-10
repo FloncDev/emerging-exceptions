@@ -1,3 +1,4 @@
+#file: noinspection GrazieInspection
 # GitHub Action Workflow enforcing our code style.
 
 name: Lint
