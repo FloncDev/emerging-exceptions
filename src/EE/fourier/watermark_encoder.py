@@ -1,4 +1,4 @@
-
+import PIL.Image
 import numpy as np
 from PIL import Image
 
@@ -25,7 +25,14 @@ def embed_watermark(image_in, watermark_text):
 
 def main(image, watermark_text):
     out_image = embed_watermark(image, watermark_text)
-    out_image = Image.fromarray(out_image)
     return out_image
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    image_path = input('Image path for the original image: ')
+    text = input('Input text that you want to watermark: ')
+    image_obj = main(PIL.Image.open(image_path), text)
+    out_path = input('The output path for the image:')
+    image_obj.save(out_path)
+    print('For reminder, You will require the original image, the watermarked image '+\
+          'and the length of the watermarked text to get the text you watermarked.')
+    print(f"Your length of watermark is:{len(text)}")

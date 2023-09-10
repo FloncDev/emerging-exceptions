@@ -23,13 +23,13 @@ def extract_watermark(watermarked_image, original_image, watermark_length):
 
     return extracted_watermark
 
-# def main():
-#     watermarked_image_path = input("Enter the path to the watermarked image file: ")
-#     original_image_path = input("Enter the path to the original image file: ")
-#     watermark_length = int(input("Enter the length of the watermark text: "))
+def main():
+    watermarked_image_path = input("Enter the path to the watermarked image file: ")
+    original_image_path = input("Enter the path to the original image file: ")
+    watermark_length = int(input("Enter the length of the watermark text: "))
 
-#     extracted_watermark = extract_watermark(watermarked_image_path, original_image_path, watermark_length)
-#     print(f"Extracted watermark is: {extracted_watermark}")
+    extracted_watermark = extract_watermark(watermarked_image_path, original_image_path, watermark_length)
+    print(f"Extracted watermark is: {extracted_watermark}")
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
