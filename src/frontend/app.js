@@ -1,5 +1,5 @@
 let encode = true;
-let module = "fourier"
+let module = "datastamp"
 
 const upload = document.getElementById("image");
 const center_upload = document.getElementById("upload");
@@ -77,7 +77,7 @@ upload.addEventListener("drop", e => {
     }
 })
 
-let fourier_btn = document.getElementById("fourier_btn")
+// let fourier_btn = document.getElementById("fourier_btn")
 let steg_btn = document.getElementById("steg_btn")
 let datastamp_btn = document.getElementById("datastamp_btn")
 
@@ -95,12 +95,12 @@ for (let i = 0; i < nav_items.length; i++) {
     })
 }
 
-fourier_btn.addEventListener("click", e => {
-    // Needs both input and output panel
-    output_panel.hidden = false
-    module = "fourier"
-    get_inputs()
-})
+// fourier_btn.addEventListener("click", e => {
+//     // Needs both input and output panel
+//     output_panel.hidden = false
+//     module = "fourier"
+//     get_inputs()
+// })
 
 steg_btn.addEventListener("click", e => {
     // Only needs input

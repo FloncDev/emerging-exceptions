@@ -53,7 +53,7 @@ async def get_app():
 
 
 @app.get("/components")
-async def components(module: str = "fourier", encode: bool = False):
+async def components(module: str = "datastamp", encode: bool = False):
     """Return components as html"""
     match module:
         case "fourier":
