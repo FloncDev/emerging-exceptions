@@ -68,29 +68,6 @@ async def components(module: str = "datastamp", encode: bool = False):
     class_dict = loader.get_library_class(loader.get_script_path())
     print(class_dict)
     match module:
-        case "fourier":
-            name = 'fourier'
-
-            # options = [
-            #     SelectOption("One", "1"),
-            #     SelectOption("Two", "2"),
-            #     SelectOption("Three", "3"),
-            # ]
-            # options2 = [
-            #     SelectOption("One", "11"),
-            #     SelectOption("Two", "22"),
-            #     SelectOption("Three", "33"),
-            # ]
-            # components = [
-            #     Text("Title here", "asd", TextType.Small, "Hello, World!"),
-            #     Text("Title here", "asdc", TextType.Large, "Hello, World!"),
-            #     Select("Hello", "hi", options),
-            #     Dropdown("Asd", "g", options2),
-            # ]
-            #
-            # if not encode:
-            #     for comp in components:
-            #         comp.title = "Another title"
 
 
         case "datastamp":
@@ -126,8 +103,6 @@ async def process_image(
             os.remove(pathname_item)
             pathname.remove(pathname_item)
     data = json.loads(data)
-    img_bytes = BytesIO(await image.read())
-    img_obj = PIL.Image.open(img_bytes)
     inputs_data = data['inputs']
     encode = data['is_encode']
     # PIL.Image.open(img_bytes) to open as pillow image
@@ -138,16 +113,19 @@ async def process_image(
         case "fourier":
             name = 'fourier'
             try:
+                img_bytes = BytesIO(await image.read())
+                img_obj = PIL.Image.open(img_bytes)
                 inner_data['img'] = img_obj
             except:
                 return 'Error: PNG image not detected'
             return_data = 'img'
-            # print(img_bytes)  # replace with data image stuff
 
         case "datastamp":
             name = 'pixelQR'
             if not encode:
                 try:
+                    img_bytes = BytesIO(await image.read())
+                    img_obj = PIL.Image.open(img_bytes)
                     inner_data['img'] = img_obj
                 except:
                     return 'Error: PNG image not detected'
@@ -158,6 +136,8 @@ async def process_image(
         case "steg":
             name = 'Stego'
             try:
+                img_bytes = BytesIO(await image.read())
+                img_obj = PIL.Image.open(img_bytes)
                 inner_data['img'] = img_obj
             except:
                 return 'Error: PNG image not detected'
