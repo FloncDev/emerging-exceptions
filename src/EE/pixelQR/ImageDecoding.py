@@ -378,7 +378,6 @@ undistorted"""
 
 def photo_to_str(im):
     """Converts photo to string
-
     Parameters
     ----------
     img : Image
@@ -391,7 +390,6 @@ def photo_to_str(im):
         Outputs data decoded from Datastamp.
 
     """
-
     imgsize = im.size
 
     img = im.resize(
