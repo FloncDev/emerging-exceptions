@@ -139,5 +139,6 @@ class Steganography(utils.LibraryBase):  # noqa: E501
 
 if __name__ == '__main__':
     lib = Steganography()
-    asyncio.run(
+    img_obj = asyncio.run(
         lib.routine(utils.MODE_ENCRYPTION, {'img': PIL.Image.open('img.png'), 'passcode': 'test', 'msg': 'test'}))
+    img_obj['img_down'].save('img.png')
