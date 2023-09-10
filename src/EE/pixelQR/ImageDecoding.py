@@ -376,13 +376,13 @@ undistorted"""
 #     return output_msg.decode("utf-8")
 
 
-def photo_to_str(img_path):
+def photo_to_str(im):
     """Converts photo to string
-
+    
     Parameters
     ----------
-    img_path : str
-        Input image path of Datastamp you wish to decode
+    img : Image
+        Input image of Datastamp you wish to decode
         (NOTE, code must have a white background).
 
     Returns
@@ -391,11 +391,10 @@ def photo_to_str(img_path):
         Outputs data decoded from Datastamp.
 
     """
-    with Image.open(img_path) as im:
-        imgsize = im.size
+    imgsize = im.size
 
-        img = im.resize(
-            (math.floor(0.25*imgsize[0]), math.floor(0.25*imgsize[1])), 1)
+    img = im.resize(
+        (math.floor(0.25*imgsize[0]), math.floor(0.25*imgsize[1])), 1)
 
     img = centre_and_crop_img(img)
     img = resize_and_colour_correct(img)
