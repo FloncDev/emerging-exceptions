@@ -1,5 +1,5 @@
-import cv2
 import numpy as np
+
 
 def extract_watermark(watermarked_image, original_image, watermark_length):
     watermarked_image = np.array(watermarked_image)
@@ -12,7 +12,6 @@ def extract_watermark(watermarked_image, original_image, watermark_length):
     for x in range(watermarked_image.shape[0]):
         for y in range(watermarked_image.shape[1]):
             pixel = list(watermarked_image[x, y])
-            original_pixel = list(original_image[x, y])
             for n in range(3):
                 extracted_data.append(bin(pixel[n])[-1])
 
