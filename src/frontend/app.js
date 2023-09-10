@@ -97,21 +97,18 @@ for (let i = 0; i < nav_items.length; i++) {
 
 fourier_btn.addEventListener("click", e => {
     // Needs both input and output panel
-    output_panel.hidden = false
     module = "fourier"
     get_inputs()
 })
 
 steg_btn.addEventListener("click", e => {
     // Only needs input
-    output_panel.hidden = false
     module = "steg"
     get_inputs()
 })
 
 datastamp_btn.addEventListener("click", e => {
     // Only needs input
-    output_panel.hidden = true
     module = "datastamp"
     get_inputs()
 })
