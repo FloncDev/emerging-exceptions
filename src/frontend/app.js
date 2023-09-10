@@ -212,4 +212,17 @@ submit_btn.addEventListener("click", e => {
     })
 })
 
+const encode_btn = document.getElementById("encode_btn")
+const decode_btn = document.getElementById("decode_btn")
+
+encode_btn.addEventListener("click", e => {
+    encode = true
+    get_inputs()
+})
+
+decode_btn.addEventListener("click", e => {
+    encode = false
+    get_inputs()
+})
+
 get_inputs()
