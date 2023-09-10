@@ -1,13 +1,14 @@
 * {
     font-family: 'Fira Code';
     --background: #171717;
-    --primary: #6C9E8F;
-    --accent: #00000000; /* TODO */
+    --primary: #6C9E89;
+    --accent: #B87676;
 }
 
 html {
     padding: 0;
     margin: 0;
+    overflow: hidden
 }
 
 body {
@@ -19,7 +20,7 @@ body {
 }
 
 .team_name {
-    color: var(--primary);
+    color: var(--accent);
     width: 475px;
     text-align: center;
     margin: 0;
@@ -37,7 +38,13 @@ header {
     height: 80%;
 }
 
-.main > div {
+.page {
+    display: flex;
+    flex-direction: row;
+    height: 80%;
+}
+
+.left, .readme {
     padding: 30px;
     width: 50%;
 }
@@ -65,11 +72,11 @@ iframe {
 }
 
 .btn {
-    height: 100px;
+    height: 70px;
     background-color: var(--primary);
     border-radius: 100px;
     text-align: center;
-    line-height: 100px;
+    line-height: 70px;
 }
 
 .btn:hover {
@@ -77,13 +84,13 @@ iframe {
 }
 
 .start {
-    width: 450px;
-    font-size: 40px;
+    width: 350px;
+    font-size: 35px;
     font-weight: 700;
 }
 
 .github {
-    width: 100px;
+    width: 70px;
     margin-left: 25px;
     position: relative;
 }
@@ -96,4 +103,204 @@ iframe {
     bottom: 0;
     margin: auto auto;
     display: block;
+}
+
+a {
+    color: var(--accent) !important;
+}
+
+.controls {
+    width: 475px;
+    height: 80%;
+    margin-right: 50px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-left: 17px;
+    box-sizing: content-box;
+    direction: rtl;
+}
+
+.controls::-webkit-scrollbar {
+    width: 5px;
+}
+
+.controls::-webkit-scrollbar-track {
+    background-color: #1C1C1C;
+    border-radius: 10px;
+}
+
+.controls::-webkit-scrollbar-thumb {
+    background: #2F2F2F;
+    border-radius: 10px;
+}
+
+
+.panels {
+    width: 1325px;
+    display: flex;
+    justify-content: center;
+}
+
+.panels > div {
+    width: 650px;
+    height: 650px;
+    border-radius: 10px;
+    background-color: #2F2F2F;
+    position: relative;
+}
+
+.metadata {
+    position: relative;
+    width: 650px;
+    height: 140px;
+    border-radius: 10px;
+    background-color: #1C1C1C;
+    z-index: -1;
+    bottom: 25px;
+    box-sizing: border-box;
+    padding: 35px 50px 25px 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.input_panel {
+    margin-right: 25px;
+}
+
+.app_right {
+    margin-top: 10px;
+}
+
+.image {
+    position: relative;
+    width: 650px;
+    height: 650px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 4px solid transparent;
+    border-radius: 10px;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: contain;
+}
+
+.upload {
+    width: 250px;
+    height: 250px;
+    border-radius: 10px;
+    background: #282828;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.upload > h2 {
+    margin-bottom: 20px;
+    margin-top: 14px;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.upload > p {
+    margin: 0;
+    width: 200px;
+}
+
+nav {
+    width: 100%;
+    height: 66px;
+    background-color: #1C1C1C;
+    border-radius: 5px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: row;
+}
+
+.nav_item {
+    width: 33.3%;
+    text-decoration: none;
+    text-align: center;
+    justify-content: center;
+    line-height: 66px;
+    color: #FFF;
+    font-weight: 300;
+    font-size: 32px;
+    cursor: pointer;
+}
+
+.selected {
+    border-radius: 5px;
+    font-weight: 600;
+    background-color: #2F2F2F;
+}
+
+.key {
+    color: rgba(255, 255, 255, 0.70);
+    font-size: 20px;
+    font-weight: 450;
+    text-align: left;
+    padding-right: 40px;
+}
+
+.value {
+    font-size: 20px;
+    font-weight: 450;
+    text-align: left;
+}
+
+.flash_green {
+    animation: flash_green 2s;
+}
+
+@keyframes flash_green {
+    0% {outline-color: #4F6445FF;}
+    100% {outline-color: #4F644500;}
+}
+
+.flash_red {
+    animation: flash_red 1s;
+}
+
+@keyframes flash_red {
+    0% {outline-color: #754040FF;}
+    100% {outline-color: #75404000;}
+}
+
+.submit {
+    width: 275px;
+    height: 75px;
+    font-size: 40px;
+    font-weight: 500;
+    background-color: #2F2F2F;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 75px;
+    cursor: pointer;
+    margin-top: 25px;
+}
+
+.encryption_type {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 25px;
+    cursor: pointer;
+}
+
+.encryption_type > div {
+    width: 175px;
+    height: 50px;
+    border-radius: 5px;
+    background: #2F2F2F;
+    font-size: 32px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 50px;
+    margin-right: 25px;
 }

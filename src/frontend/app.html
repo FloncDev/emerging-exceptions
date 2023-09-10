@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emerging Exceptions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;450;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page">
+        <div class="app_left">
+            <header>
+                    <img src="media/Pydis codejam.svg" alt="Pydig" height="80">
+                    <h1 class="team_name">Emerging Exceptions</h1>
+            </header>
+
+            <div class="encryption_type">
+                <div id="encode_btn" onclick="encode=true; get_inputs()">Encode</div>
+                <div id="decode_btn" onclick="encode=false; get_inputs()">Decode</div>
+            </div>
+
+            <div class="controls">
+            </div>
+
+            <div class="submit" id="submit">
+                Submit
+            </div>
+        </div>
+
+
+        <div class="app_right">
+            <nav>
+                <div class="nav_item selected" id="fourier_btn">Fourier Watermark</div>
+                <div class="nav_item" id="steg_btn">Steganography</div>
+                <div class="nav_item" id="datastamp_btn">Datastamp</div>
+            </nav>
+
+            <div class="panels">
+                <div class="input_panel">
+                    <div class="image" id="image">
+                        <div class="upload" id="upload">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="99" height="87" viewBox="0 0 99 87" fill="none">
+                                <path d="M3.09375 55.7051C4.80238 55.7051 6.1875 57.1062 6.1875 58.8346V74.482C6.1875 77.9388 8.95774 80.741 12.375 80.741H86.625C90.0423 80.741 92.8125 77.9388 92.8125 74.482V58.8346C92.8125 57.1062 94.1976 55.7051 95.9062 55.7051C97.6149 55.7051 99 57.1062 99 58.8346V74.482C99 81.3955 93.4595 87 86.625 87H12.375C5.54048 87 0 81.3955 0 74.482V58.8346C0 57.1062 1.38512 55.7051 3.09375 55.7051Z" fill="white"/>
+                                <path d="M47.3124 0.916607C48.5206 -0.305536 50.4794 -0.305536 51.6876 0.916607L70.2501 19.6936C71.4583 20.9157 71.4583 22.8972 70.2501 24.1193C69.0419 25.3415 67.0831 25.3415 65.8749 24.1193L52.5938 10.6847V65.7193C52.5938 67.4477 51.2086 68.8488 49.5 68.8488C47.7914 68.8488 46.4062 67.4477 46.4062 65.7193V10.6847L33.1251 24.1193C31.9169 25.3415 29.9581 25.3415 28.7499 24.1193C27.5417 22.8972 27.5417 20.9157 28.7499 19.6936L47.3124 0.916607Z" fill="white"/>
+                            </svg>
+                            <h2>Upload</h2>
+                            <p>Drag files here or click to upload</p>
+                        </div>
+                    </div>
+
+                    <div class="metadata">
+                        <table>
+                            <tr>
+                                <th class="key">_</th>
+                                <th class="value">_</th>
+                            </tr>
+                            <tr>
+                                <th class="key">_</th>
+                                <th class="value">_</th>
+                            </tr>
+                            <tr>
+                                <th class="key">_</th>
+                                <th class="value">_</th>
+                            </tr>
+                        </table>
+
+                        <table>
+                            <tr>
+                                <th class="key">_</th>
+                                <th class="value">_</th>
+                            </tr>
+                            <tr>
+                                <th class="key">_</th>
+                                <th class="value">_</th>
+                            </tr>
+                            <tr>
+                                <th class="key">_</th>
+                                <th class="value">_</th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="out_panel">
+                    <div class="image">
+
+                    </div>
+
+                    <div class="metadata">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script defer src="app.js"></script>
+</body>
+</html>

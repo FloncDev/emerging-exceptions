@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="github-markdown.css">
+    <link rel="stylesheet" href="https://flonc.b-cdn.net/github-markdown-dark.css" type="text/css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,39 +18,46 @@
 
    <div class="main">
         <div class="left">
-            <!-- For some reason height 100% isn't actually 100% -->
-            <iframe src="https://www.youtube-nocookie.com/embed/hgI0p1zf31k?si=V_EnsD6wHQzxcmku" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe src="https://www.youtube-nocookie.com/embed/" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen id="embed"></iframe>
 
             <div class="buttons">
-                <div class="btn start" href="#">Launch Web App</div>
+                <div class="btn start" href="/app">Launch Web App</div>
                 <div class="btn github" href="https://github.com/Floncdev/emerging-exceptions">
-                    <img width="65px" src="media/White Github Logo.svg" alt="GitHub Logo">
+                    <img width="50px" src="media/White Github Logo.svg" alt="GitHub Logo">
                 </div>
             </div>
         </div>
-        <div class="readme markdown-body" id="readme">
+        <div class="readme markdown-body" id="readme"></div>
         </div>
    </div>
 </body>
-    <script>
-        let readmeurl = window.location.origin + "/rendered_readme"
+<script>
+    let readmeurl = window.location.origin + "/rendered_readme"
 
-        fetch(readmeurl)
-            .then(resp => resp.text())
-            .then(text => {
-                document.getElementById("readme").innerHTML = text.slice(1, text.length-1);
-        });
+    fetch(readmeurl)
+        .then(resp => resp.text())
+        .then(text => {
+            document.getElementById("readme").innerHTML = text.slice(1, text.length-1);
+    });
 
-        let btns = document.getElementsByClassName("btn");
+    let btns = document.getElementsByClassName("btn");
 
-        console.log(btns, btns.length)
+    console.log(btns, btns.length)
 
-        for (let i = 0; i < btns.length; i++) {
-            console.log(i)
-            btns[i].addEventListener("click", () => {
-                console.log("clicked")
-                window.location = btns[i].getAttribute("href");
-            })
-        }
-    </script>
+    for (let i = 0; i < btns.length; i++) {
+        console.log(i)
+        btns[i].addEventListener("click", () => {
+            console.log("clicked")
+            window.location = btns[i].getAttribute("href");
+        })
+    }
+
+    let yt_embed = document.getElementById("embed")
+
+    fetch("/youtube_id")
+    .then(resp => resp.text())
+    .then(text => {
+        yt_embed.setAttribute("src", yt_embed.getAttribute("src")+text.slice(1, -1))
+    })
+</script>
 </html>
