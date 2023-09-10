@@ -1,9 +1,10 @@
 import json
 import os
 from io import BytesIO
-from typing import Annotated
 import traceback
 import PIL.Image
+from typing import Annotated, Union
+
 import requests
 from dotenv import dotenv_values, find_dotenv
 from fastapi import FastAPI, Form, UploadFile
@@ -115,7 +116,8 @@ async def components(module: str = "fourier", encode: bool = False):
 
 @app.post("/process")
 async def process_image(
-    image: Annotated[UploadFile, Form()], data: Annotated[str, Form()]
+    data: Annotated[str, Form()] = None,
+    image: Annotated[Union[None, UploadFile], Form()] = None,
 ):
     """Process the image with the defined options"""
     class_dict = loader.get_library_class(loader.get_script_path())
