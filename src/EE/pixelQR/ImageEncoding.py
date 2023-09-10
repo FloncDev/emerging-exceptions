@@ -11,7 +11,7 @@ import PIL
 from PIL import Image, ImageOps
 
 
-def str_to_image(secret_str: str, out_path: str, img_size: tuple = (32, 32)):
+def str_to_image(secret_str: str, img_size: tuple = (32, 32)):
     """Converts input string to Datastamp
 
     Parameters
@@ -30,21 +30,20 @@ def str_to_image(secret_str: str, out_path: str, img_size: tuple = (32, 32)):
 
     """
     collist = str_to_colour_list2(secret_str)
-    colour_list_to_image(collist, img_size, out_path)
-    with Image.open(out_path) as im:
-        new_image = Image.new("RGB", (33, 34))
-        new_image.paste(im, (1, 1))
-        # The "new_image" variable is used to form the black C shape
-        # The black C shape is used for orientation purposes
-        w_background = Image.new("L", (35, 36))
-        w_background = ImageOps.colorize(
-            w_background, (255, 255, 255), (255, 255, 255))
-        w_background.paste(new_image, (1, 1))
-        # The white background is necessary for the datastamp to successfully
-        # be scanned
-        new_image = w_background.resize((1000, 1000), 0)
-        new_image.save(out_path)
-    return out_path
+    im = colour_list_to_image(collist, img_size)
+    new_image = Image.new("RGB", (33, 34))
+    new_image.paste(im, (1, 1))
+    # The "new_image" variable is used to form the black C shape
+    # The black C shape is used for orientation purposes
+    w_background = Image.new("L", (35, 36))
+    w_background = ImageOps.colorize(
+        w_background, (255, 255, 255), (255, 255, 255))
+    w_background.paste(new_image, (1, 1))
+    # The white background is necessary for the datastamp to successfully
+    # be scanned
+    new_image = w_background.resize((1000, 1000), 0)
+    # new_image.save(out_path)
+    return new_image
 
 
 def baseconvert2(num: int, base: int) -> str:
@@ -134,7 +133,7 @@ def str_to_colour_list2(SecretMsg: str):
     return colour_list
 
 
-def colour_list_to_image(colour_list: list, image_size: tuple, out_path: str):
+def colour_list_to_image(colour_list: list, image_size: tuple):
     """Converts list of colours into the encoding portion of Datastamp
 
     Parameters
@@ -201,12 +200,11 @@ def colour_list_to_image(colour_list: list, image_size: tuple, out_path: str):
         pixel_num = pixel_num + 1
     background2.alpha_composite(background, (0, 0))
     background2.alpha_composite(new_image, (0, 0))
-    background2.save(out_path)
-
+    return background2
 
 if __name__ == "__main__":
     input_str = input(
         "Please input the message you would like to encode in image \n")
     output_path = input("Please input the output path of the encoded file \n")
     str_to_image(input_str, output_path)
-    print("done!")
+    print(output_path)
