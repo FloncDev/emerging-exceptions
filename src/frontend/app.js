@@ -104,7 +104,7 @@ fourier_btn.addEventListener("click", e => {
 
 steg_btn.addEventListener("click", e => {
     // Only needs input
-    output_panel.hidden = true
+    output_panel.hidden = false
     module = "steg"
     get_inputs()
 })
@@ -197,7 +197,18 @@ submit_btn.addEventListener("click", e => {
         body: data
     })
     .then(resp => {
-        resp.text().then(a => console.log(a))
+        console.log(resp.headers.get("Content-Type"))
+        if (resp.headers.get("Content-Type") == "image/png") {
+            resp.blob().then(blob => {
+                url = URL.createObjectURL(blob)
+                output_panel.children[0].children[0].src = url
+                output_panel.children[0].children[0].hidden= false
+            })
+        } else {
+            resp.text().then(text => {
+                output_panel.children[0].innerHTML = text
+            })
+        }
     })
 })
 

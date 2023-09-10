@@ -5,7 +5,7 @@ from typing import Annotated
 import requests
 from dotenv import dotenv_values, find_dotenv
 from fastapi import FastAPI, Form, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from src.EE.ui.components import Dropdown, Select, SelectOption, Text, TextType
@@ -101,13 +101,16 @@ async def process_image(
 
     match data["module"]:
         case "fourier":
-            print(img_bytes)  # replace with data image stuff
+            pass
 
         case "datastamp":
             pass
 
         case "steg":
             pass
+
+    return Response(img_bytes.read(), media_type="image/png")
+    return "Text example"
 
 
 # Make sure this is always at the bottom

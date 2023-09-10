@@ -304,3 +304,9 @@ nav {
     line-height: 50px;
     margin-right: 25px;
 }
+
+.image > img {
+    object-fit: scale-down;
+    width: 650px;
+    height: 650px;
+}
