@@ -378,6 +378,7 @@ undistorted"""
 
 def photo_to_str(im):
     """Converts photo to string
+    
     Parameters
     ----------
     img : Image
