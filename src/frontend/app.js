@@ -43,11 +43,35 @@ upload.addEventListener("drop", e => {
 
                 let reader = new FileReader()
                 reader.onload = (e) => {
+                    upload.style.backgroundImage = ""
                     upload.style.backgroundImage = `url(${e.target.result})`
                 }
 
                 reader.readAsDataURL(file)
+                let meta = upload.parentElement.children[1]
 
+                let left_table = meta.children[0].children[0]
+                let right_table = meta.children[1].children[0]
+
+                // File size
+                left_table.children[0].children[0].innerHTML = "Size"
+                left_table.children[0].children[1].innerHTML = Math.round(file.size / 1000).toString() + " KB"
+
+                // File ext
+                right_table.children[0].children[0].innerHTML = "Format"
+                right_table.children[0].children[1].innerHTML = file_extention.toUpperCase()
+
+                // Type
+                left_table.children[1].children[0].innerHTML = "Type"
+                left_table.children[1].children[1].innerHTML = file.type
+
+                // Supported
+                right_table.children[1].children[0].innerHTML = "Supported"
+                right_table.children[1].children[1].innerHTML = "True"
+
+                // Last Modified
+                left_table.children[2].children[0].innerHTML = "Modified"
+                left_table.children[2].children[1].innerHTML = file.lastModified
             }
         })
     }
@@ -132,6 +156,8 @@ function read_inputs() {
                     }
                 }
 
+                data[form.id] = form.children[0].id
+
                 break
 
             case "dropdown":
@@ -140,8 +166,6 @@ function read_inputs() {
 
                 for (let i=0;i<select.length;i++) {
                     element = select.children[i]
-
-                    console.log(element)
 
                     if (element.value == selected) {
                         data[select.id] = element.id

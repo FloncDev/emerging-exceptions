@@ -70,7 +70,7 @@ async def components(module: str = "fourier", encode: bool = False):
             components = [
                 Text("Title here", "asd", TextType.Small, "Hello, World!"),
                 Text("Title here", "asdc", TextType.Large, "Hello, World!"),
-                Select("Hello", "hi", options, default="1"),
+                Select("Hello", "hi", options),
                 Dropdown("Asd", "g", options2),
             ]
 

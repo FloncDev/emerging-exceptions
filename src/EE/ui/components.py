@@ -58,12 +58,9 @@ class SelectOption:
 class Select(Element):
     """A basic select menu"""
 
-    def __init__(
-        self, title: str, id: str, options: list[SelectOption], default: str | None
-    ) -> None:
+    def __init__(self, title: str, id: str, options: list[SelectOption]) -> None:
         super().__init__(title, id)
         self.options = options
-        self.default = default
 
     def html(self) -> str:
         """Return the components HTML"""
