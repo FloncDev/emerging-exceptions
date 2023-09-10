@@ -7,6 +7,7 @@ Created on Wed Sep  6 11:46:31 2023
 
 import math
 
+import PIL.Image
 import numpy as np
 from PIL import Image, ImageFilter
 
@@ -391,11 +392,18 @@ def photo_to_str(img_path):
         Outputs data decoded from Datastamp.
 
     """
-    with Image.open(img_path) as im:
+    if isinstance(img_path, PIL.Image.Image):
+        im = img_path
         imgsize = im.size
 
         img = im.resize(
-            (math.floor(0.25*imgsize[0]), math.floor(0.25*imgsize[1])), 1)
+            (math.floor(0.25 * imgsize[0]), math.floor(0.25 * imgsize[1])), 1)
+    else:
+        with Image.open(img_path) as im:
+            imgsize = im.size
+
+            img = im.resize(
+                (math.floor(0.25 * imgsize[0]), math.floor(0.25 * imgsize[1])), 1)
 
     img = centre_and_crop_img(img)
     img = resize_and_colour_correct(img)
