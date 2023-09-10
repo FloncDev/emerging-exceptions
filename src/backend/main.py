@@ -1,6 +1,6 @@
 import json
 from io import BytesIO
-from typing import Annotated
+from typing import Annotated, Union
 
 import requests
 from dotenv import dotenv_values, find_dotenv
@@ -92,11 +92,13 @@ async def components(module: str = "fourier", encode: bool = False):
 
 @app.post("/process")
 async def process_image(
-    image: Annotated[UploadFile, Form()], data: Annotated[str, Form()]
+    data: Annotated[str, Form()] = None,
+    image: Annotated[Union[None, UploadFile], Form()] = None,
 ):
     """Process the image with the defined options"""
     data = json.loads(data)
-    img_bytes = BytesIO(await image.read())
+    if image is not None:
+        img_bytes = BytesIO(await image.read())
     # PIL.Image.open(img_bytes) to open as pillow image
 
     match data["module"]:
@@ -109,8 +111,8 @@ async def process_image(
         case "steg":
             pass
 
-    return Response(img_bytes.read(), media_type="image/png")
     return "Text example"
+    return Response(img_bytes.read(), media_type="image/png")
 
 
 # Make sure this is always at the bottom
