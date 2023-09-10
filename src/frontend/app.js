@@ -102,16 +102,17 @@ for (let i = 0; i < nav_items.length; i++) {
 //     get_inputs()
 // })
 
+
 steg_btn.addEventListener("click", e => {
     // Only needs input
-    output_panel.hidden = false
+    input_panel.hidden = false
     module = "steg"
     get_inputs()
 })
 
 datastamp_btn.addEventListener("click", e => {
     // Only needs input
-    output_panel.hidden = true
+    input_panel.hidden = true
     module = "datastamp"
     get_inputs()
 })
@@ -184,7 +185,7 @@ const submit_btn = document.getElementById("submit")
 
 submit_btn.addEventListener("click", e => {
     let data = new FormData()
-    data.append("image", file)
+    if (file != null) {data.append("image", file)}
     data.append("data", JSON.stringify({
         "module": module,
         "is_encode": encode,
