@@ -35,13 +35,10 @@ def int_key_decode(int_key: int, img: PIL.Image.Image) -> tuple[list[tuple[int, 
         data = (key_data % img.size[0], key_data // img.size[0])
         coord_list_0.append(data)
         protected_coord_list.append(data)
-    print(coord_list_0)
     # noinspection PyTypeChecker
     px = img.load()
     colour_data_0 = [px[x, y] for x, y in coord_list_0]
-    print(colour_data_0)
     colour_data_0_int = [list_int_to_int(d, 256) for d in colour_data_0]
-    print(colour_data_0_int)
     random_seed = (colour_data_0_int[0] * colour_data_0_int[1]) + 1
     pass_key = utils.bit_to_byte(list(utils.base_convert(
         (colour_data_0_int[2] * colour_data_0_int[3] * colour_data_0_int[4] * colour_data_0_int[5]) + 1, 2)))
@@ -89,7 +86,6 @@ class Steganography(utils.LibraryBase):  # noqa: E501
         random_instance = random.Random(x=random_seed)
         if func_mode == utils.MODE_ENCRYPTION:
             string_input = data_input['msg']
-            print(pass_key)
             encryption_box = utils.Encryption(pass_key, utils.MODE_ENCRYPTION)
             encryption_box.setData(string_input)
             data = encryption_box.getResult()
@@ -101,7 +97,6 @@ class Steganography(utils.LibraryBase):  # noqa: E501
                 protected_key_list.append(coord)
                 ori = px[coord[0], coord[1]]
                 px[coord[0], coord[1]] = (ori[0], ori[1], ((ori[2] // 2) * 2) + bit)
-                break
             return {'img_down': init_image}
 
         if func_mode == utils.MODE_DECRYPTION:
@@ -121,7 +116,6 @@ class Steganography(utils.LibraryBase):  # noqa: E501
                     break
                 i += 1
             i = 0
-            print(size)
             int_size = int(''.join([str(s) for s in size]), 2)
             data = []
             while True:
@@ -141,4 +135,6 @@ if __name__ == '__main__':
     lib = Steganography()
     img_obj = asyncio.run(
         lib.routine(utils.MODE_ENCRYPTION, {'img': PIL.Image.open('img.png'), 'passcode': 'test', 'msg': 'test'}))
-    img_obj['img_down'].save('img.png')
+    img_obj['img_down'].save('img_new.png')
+    return_data = asyncio.run(lib.routine(utils.MODE_DECRYPTION, {'img': PIL.Image.open('img_new.png'), 'passcode': 'test'}))
+    print(return_data)
