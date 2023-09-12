@@ -42,9 +42,9 @@ def int_key_decode(int_key: int, img: PIL.Image.Image) -> tuple[list[tuple[int, 
     print(colour_data_0)
     colour_data_0_int = [list_int_to_int(d, 256) for d in colour_data_0]
     print(colour_data_0_int)
-    random_seed = colour_data_0_int[0] * colour_data_0_int[1]
+    random_seed = (colour_data_0_int[0] * colour_data_0_int[1]) + 1
     pass_key = utils.bit_to_byte(list(utils.base_convert(
-        colour_data_0_int[2] * colour_data_0_int[3] * colour_data_0_int[4] * colour_data_0_int[5], 2)))
+        (colour_data_0_int[2] * colour_data_0_int[3] * colour_data_0_int[4] * colour_data_0_int[5]) + 1, 2)))
     return protected_coord_list, random_seed, pass_key
 
 
@@ -85,7 +85,7 @@ class Steganography(utils.LibraryBase):  # noqa: E501
         if 2 ** (size * 6) > integer_key:
             raise ValueError('The length of the key is not sufficient for the size of the image')
         px = init_image.load()
-        protected_key_list, random_seed, pass_key = int_key_decode(integer_key, init_image)
+        protected_key_list, random_seed, pass_key = int_key_decode(integer_key + 1, init_image)
         random_instance = random.Random(x=random_seed)
         if func_mode == utils.MODE_ENCRYPTION:
             string_input = data_input['msg']
@@ -102,9 +102,7 @@ class Steganography(utils.LibraryBase):  # noqa: E501
                 ori = px[coord[0], coord[1]]
                 px[coord[0], coord[1]] = (ori[0], ori[1], ((ori[2] // 2) * 2) + bit)
                 break
-            filename = ''.join(random.choices('0123456789abcdef', k=32)) + '.png'
-            init_image.save(filename)
-            return {'img_down': filename}
+            return {'img_down': init_image}
 
         if func_mode == utils.MODE_DECRYPTION:
             i = 0
@@ -141,5 +139,6 @@ class Steganography(utils.LibraryBase):  # noqa: E501
 
 if __name__ == '__main__':
     lib = Steganography()
-    asyncio.run(
+    img_obj = asyncio.run(
         lib.routine(utils.MODE_ENCRYPTION, {'img': PIL.Image.open('img.png'), 'passcode': 'test', 'msg': 'test'}))
+    img_obj['img_down'].save('img.png')

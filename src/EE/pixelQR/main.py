@@ -2,13 +2,16 @@ import asyncio
 import base64
 import random
 
-import ImageDecoding
-import ImageEncoding
+# import ImageDecoding
+# import ImageEncoding
 
 try:
     from .. import utils
+    import ImageDecoding
+    import ImageEncoding
 except ImportError:
     from EE import utils
+    from EE.pixelQR import ImageDecoding, ImageEncoding
 
 
 class PixelQR(utils.LibraryBase):  # noqa: E501
@@ -40,9 +43,8 @@ class PixelQR(utils.LibraryBase):  # noqa: E501
                 data = base64.b64encode(encryption_box.getResult()).decode('utf-8')
             else:
                 data = data_input['msg']
-            pathname_gen = ''.join(random.choices('0123456789abcdef', k=32)) + '.png'
-            name = ImageEncoding.str_to_image(data, pathname_gen)
-            return {'img_down': name}
+            img_obj = ImageEncoding.str_to_image(data)
+            return {'img_down': img_obj}
         if func_mode == utils.MODE_DECRYPTION:
             if data_input['en/dec'] == 'aes256':
                 data = ImageDecoding.photo_to_str(data_input['img'])

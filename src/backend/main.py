@@ -1,18 +1,28 @@
 import json
+import os
 from io import BytesIO
-from typing import Annotated
+import traceback
+import PIL.Image
+from typing import Annotated, Union
 
 import requests
 from dotenv import dotenv_values, find_dotenv
 from fastapi import FastAPI, Form, UploadFile
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, Response, FileResponse
 from fastapi.staticfiles import StaticFiles
+import random
 
-from src.EE.ui.components import Dropdown, Select, SelectOption, Text, TextType
+try:
+    from src.EE.ui.components import Dropdown, Select, SelectOption, Text, TextType
+    from src.EE import loader, utils
+except ImportError:
+    from EE.ui.components import Dropdown, Select, SelectOption, Text, TextType
+    from EE import loader, utils
+
 
 app = FastAPI()
 env = dotenv_values(find_dotenv())
-
+pathname = []
 with open("README.md") as f:
     text = f.read()
 
@@ -55,36 +65,27 @@ async def get_app():
 @app.get("/components")
 async def components(module: str = "datastamp", encode: bool = False):
     """Return components as html"""
+    class_dict = loader.get_library_class(loader.get_script_path())
+    print(class_dict)
     match module:
-        case "fourier":
-            options = [
-                SelectOption("One", "1"),
-                SelectOption("Two", "2"),
-                SelectOption("Three", "3"),
-            ]
-            options2 = [
-                SelectOption("One", "11"),
-                SelectOption("Two", "22"),
-                SelectOption("Three", "33"),
-            ]
-            components = [
-                Text("Title here", "asd", TextType.Small, "Hello, World!"),
-                Text("Title here", "asdc", TextType.Large, "Hello, World!"),
-                Select("Hello", "hi", options),
-                Dropdown("Asd", "g", options2),
-            ]
 
-            if not encode:
-                for comp in components:
-                    comp.title = "Another title"
 
         case "datastamp":
-            components = [Text("Title here", "asd", TextType.Small, "Hello, World!")]
+            name = 'pixelQR'
+
 
         case "steg":
-            components = [Text("Title here", "asd", TextType.Small, "Hello, World!")]
+            name = 'Stego'
+    try:
+        classes = class_dict[name]()
+        components = loader.getOption(classes, encode)
+        print(components)
+    except:
+        components = []
+        print('failed')
 
     with open("src/frontend/components/style.html") as f:
+        # noinspection PyUnboundLocalVariable
         html = f.read() + "\n".join(i.html() for i in components)
 
     return HTMLResponse(html)
@@ -92,25 +93,82 @@ async def components(module: str = "datastamp", encode: bool = False):
 
 @app.post("/process")
 async def process_image(
-    image: Annotated[UploadFile, Form()], data: Annotated[str, Form()]
+    data: Annotated[str, Form()] = None,
+    image: Annotated[Union[None, UploadFile], Form()] = None,
 ):
     """Process the image with the defined options"""
+    class_dict = loader.get_library_class(loader.get_script_path())
+    if len(pathname) != 0:
+        for pathname_item in pathname:
+            os.remove(pathname_item)
+            pathname.remove(pathname_item)
     data = json.loads(data)
-    img_bytes = BytesIO(await image.read())
+    inputs_data = data['inputs']
+    encode = data['is_encode']
     # PIL.Image.open(img_bytes) to open as pillow image
-
+    encode_id = utils.MODE_ENCRYPTION if encode else utils.MODE_DECRYPTION
+    print(data)
+    inner_data = json.loads(data['inputs'])
     match data["module"]:
         case "fourier":
-            pass
+            name = 'fourier'
+            try:
+                img_bytes = BytesIO(await image.read())
+                img_obj = PIL.Image.open(img_bytes)
+                inner_data['img'] = img_obj
+            except:
+                return 'Error: PNG image not detected'
+            return_data = 'img'
 
         case "datastamp":
-            pass
+            name = 'pixelQR'
+            if not encode:
+                try:
+                    img_bytes = BytesIO(await image.read())
+                    img_obj = PIL.Image.open(img_bytes)
+                    inner_data['img'] = img_obj
+                except:
+                    return 'Error: PNG image not detected'
+                return_data = 'msg'
+            else:
+                return_data = 'img'
 
         case "steg":
-            pass
+            name = 'Stego'
+            try:
+                img_bytes = BytesIO(await image.read())
+                img_obj = PIL.Image.open(img_bytes)
+                inner_data['img'] = img_obj
+            except:
+                return 'Error: PNG image not detected'
+            if encode:
+                return_data = 'img'
+            else:
+                return_data = 'msg'
+    print(return_data)
+    try:
+        return_dict = await class_dict[name]().routine(encode_id, inner_data)
+        if return_data == 'img':
+            img_data: PIL.Image.Image = return_dict['img_down']
+            print(type(img_data))
+            print(type(img_data.tobytes()))
+            pathname_gen = ''.join(random.choices('0123456789abcdef', k=32)) + '.png'
+            # img_data.save(pathname_gen)
+            # pathname.append(pathname_gen)
+            with BytesIO() as byte_data:
+                img_data.save(byte_data, format='png')
+                byte_data.seek(0)
+                response = Response(byte_data.read(), media_type="image/png")
+                return response
+            # return Response(img_data.tobytes(), media_type="image/png")
+        else:
+            return return_dict['msg']
+    except:
+        traceback.print_exc()
+        return 'Failed'
 
-    return Response(img_bytes.read(), media_type="image/png")
-    return "Text example"
+    # return Response(img_bytes.read(), media_type="image/png")
+    # return "Text example"
 
 
 # Make sure this is always at the bottom
