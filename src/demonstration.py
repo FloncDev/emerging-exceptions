@@ -30,6 +30,7 @@ while True:
                                                   {'img': open(path_to_image), 'passcode': encryption_key,
                                                    'msg': content}))
         return_data['img_down'].save(path_to_new)
+        print(f'Completed and saved at {path_to_new}')
     elif name == 'Stego' and mode == utils.MODE_DECRYPTION:
         path_to_image = input('[Read    ]Path to the encoded image: ')
         encryption_key = input('Key: ')
@@ -44,9 +45,11 @@ while True:
         return_data = asyncio.run(
             classes.routine(mode, {'passcode': encryption_key, 'msg': content, 'en/dec': 'aes256'}))
         return_data['img_down'].save(path_to_new)
+        print(f'Completed and saved at {path_to_new}')
     elif name == 'pixelQR' and mode == utils.MODE_DECRYPTION:
         path_to_image = input('[READ    ]Path to the photo include encoded content: ')
         encryption_key = input('Key: ')
         return_data = asyncio.run(classes.routine(mode,
                                                   {'img': open(path_to_image), 'passcode': encryption_key,
                                                    'en/dec': 'aes256'}))
+        print(f"Message: {return_data['msg']}")
