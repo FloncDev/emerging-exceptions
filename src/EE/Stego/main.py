@@ -28,28 +28,31 @@ def list_int_to_int(int_list: list[int], max_int: int) -> int:  # noqa: D103
 
 
 def int_key_decode(int_key: int, img: PIL.Image.Image) -> tuple[list[tuple[int, int]], int, str]:  # noqa: D103
-    key_list = decode_key(int_key, img.size[0] * img.size[1], 6)
+    key_list = decode_key(int_key, img.size[0] * img.size[1], 6)  # Get list of 6 integer from 1 long integer
     coord_list_0 = []
     protected_coord_list = []
     for key_data in key_list:
-        data = (key_data % img.size[0], key_data // img.size[0])
-        coord_list_0.append(data)
-        protected_coord_list.append(data)
+        data = (key_data % img.size[0], key_data // img.size[0])  # Convert integer to coordinate
+        coord_list_0.append(data)  # append the coordinate data
+        protected_coord_list.append(data)  # Protect pixel color from being overwritten
     # noinspection PyTypeChecker
-    px = img.load()
-    colour_data_0 = [px[x, y] for x, y in coord_list_0]
+    px = img.load()  # Load PixelAccess object
+    colour_data_0 = [px[x, y] for x, y in coord_list_0]  # Load pixel color from list of coordinate
     colour_data_0_int = [list_int_to_int(d, 256) for d in colour_data_0]
-    random_seed = (colour_data_0_int[0] * colour_data_0_int[1]) + 1
+    # Group list of color data to single integer (list[list[color]] -> list[int])
+    # (color:tuple[int, int, int] | tuple[int, int, int, int])
+    random_seed = (colour_data_0_int[0] * colour_data_0_int[1]) + 1  # Get integer of random seed
     pass_key = utils.bit_to_byte(list(utils.base_convert(
         (colour_data_0_int[2] * colour_data_0_int[3] * colour_data_0_int[4] * colour_data_0_int[5]) + 1, 2)))
+    # Get key byte from list of bit from integer (via base_convert and bit_to_byte)
     return protected_coord_list, random_seed, pass_key
 
 
 def get_coord(random_instance: random.Random, img: PIL.Image.Image, protected: list) -> tuple[int, int]:  # noqa: D103
     while True:
         coord = (random_instance.randint(0, img.size[0] - 1),
-                 random_instance.randint(0, img.size[1] - 1))
-        if coord in protected:
+                 random_instance.randint(0, img.size[1] - 1))  # Generate coordinate
+        if coord in protected:  # Check if it have been used
             continue
         else:
             return coord
