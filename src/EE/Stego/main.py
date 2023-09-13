@@ -102,6 +102,7 @@ class Steganography(utils.LibraryBase):  # noqa: E501
                 protected_key_list.append(coord)  # Prevent the coordinate being reuse
                 ori = px[coord[0], coord[1]]  # Retrieve color data of the coordinate
                 px[coord[0], coord[1]] = (ori[0], ori[1], ((ori[2] // 2) * 2) + bit)  # Encode data to the coordinate
+                # break # <- Unfixed bug on main branch
             return {'img_down': init_image}  # Return a PIL.Image.Image object
 
         if func_mode == utils.MODE_DECRYPTION:  # Check for decryption/decode mode
